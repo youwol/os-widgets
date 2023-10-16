@@ -116,6 +116,28 @@ const secondaryEntries : {[k:string]:{entryFile: string, name: string, loadDepen
             "@youwol/fv-group"
         ],
         "name": "favorites"
+    },
+    "webpm-package-info": {
+        "entryFile": "./lib/webpm-package-info/index.ts",
+        "loadDependencies": [
+            "@youwol/cdn-client",
+            "@youwol/flux-view",
+            "rxjs",
+            "@youwol/http-clients",
+            "@youwol/http-primitives",
+            "@youwol/fv-input"
+        ],
+        "name": "webpm-package-info"
+    },
+    "file-info": {
+        "entryFile": "./lib/file-info/index.ts",
+        "loadDependencies": [
+            "@youwol/flux-view",
+            "rxjs",
+            "@youwol/http-clients",
+            "@youwol/http-primitives"
+        ],
+        "name": "file-info"
     }
 }
 

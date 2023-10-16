@@ -49,6 +49,11 @@ template = Template(
                 loadDependencies=["@youwol/cdn-client", "@youwol/flux-view", "rxjs", "@youwol/http-clients",
                                   "@youwol/http-primitives", "@youwol/fv-input"]
             ),
+            AuxiliaryModule(
+                name="file-info",
+                entryFile="./lib/file-info/index.ts",
+                loadDependencies=["@youwol/flux-view", "rxjs", "@youwol/http-clients", "@youwol/http-primitives"]
+            ),
         ]
     ),
     userGuide=True
