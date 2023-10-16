@@ -1,9 +1,12 @@
 import { child$, Stream$, VirtualDOM, children$ } from '@youwol/flux-view'
 import * as OsCore from '@youwol/os-core'
 import { AssetsBackend, ExplorerBackend } from '@youwol/http-clients'
-import { BehaviorSubject, Observable } from 'rxjs'
+import { BehaviorSubject, from, Observable } from 'rxjs'
 import { popupModal } from './common'
-import { parse } from 'marked'
+import * as cdnClient from '@youwol/cdn-client'
+import { setup } from '../../auto-generated'
+import type * as Marked from 'marked'
+import { map } from 'rxjs/operators'
 
 export class DesktopFavoritesView implements VirtualDOM {
     public readonly class =
@@ -285,6 +288,14 @@ class SideAppRemoveAction implements VirtualDOM {
     }
 }
 
+function installMarked$() {
+    return from(
+        cdnClient.install({
+            modules: [`marked#${setup.runTimeDependencies.externals.marked}`],
+        }) as unknown as Promise<{ marked: typeof Marked }>,
+    ).pipe(map(({ marked }) => marked))
+}
+
 class AppDescriptionView implements VirtualDOM {
     public readonly class =
         'vw-50 vh-50 rounded mx-auto my-auto p-4 yw-bg-dark  yw-box-shadow yw-animate-in '
@@ -300,15 +311,14 @@ class AppDescriptionView implements VirtualDOM {
                 title: params.item.name,
                 fa: 'info',
             }),
-            {
+            child$(installMarked$(), (markedModule) => ({
                 class: 'fv-text-primary mt-4 mb-4 text-start overflow-auto',
                 style: {
                     width: '50vh',
                     maxHeight: '50vh',
                 },
-                innerHTML: parse(params.text),
-            },
-
+                innerHTML: markedModule.parse(params.text),
+            })),
             {
                 class: 'd-flex  fv-text-primary yw-hover-text-dark justify-content-center',
                 children: [new CanclePopupButtonView()],

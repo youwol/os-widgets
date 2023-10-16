@@ -17,7 +17,9 @@ project_externals = {
     "@youwol/flux-view": "^1.0.3",
     "@youwol/fv-group": "^0.2.3",
     "@youwol/fv-input": "^0.2.1",
-    "rxjs": "^6.5.5"
+    "rxjs": "^6.5.5",
+    # used by favorites view when displaying info, fetch in due time (not at load time)
+    "marked": "^4.2.3"
 }
 template = Template(
     path=folder_path,

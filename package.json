@@ -1,7 +1,7 @@
 {
     "name": "@youwol/os-widgets",
     "description": "",
-    "version": "0.1.0",
+    "version": "0.1.1-wip",
     "author": null,
     "homepage": "https://github.com/youwol/os-widgets#README.md",
     "main": "dist/@youwol/os-widgets.js",
@@ -54,7 +54,8 @@
         "@youwol/flux-view": "^1.0.3",
         "@youwol/fv-group": "^0.2.3",
         "@youwol/fv-input": "^0.2.1",
-        "rxjs": "^6.5.5"
+        "rxjs": "^6.5.5",
+        "marked": "^4.2.3"
     },
     "webpm": {
         "dependencies": {
