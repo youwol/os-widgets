@@ -43,6 +43,12 @@ template = Template(
                 loadDependencies=["@youwol/cdn-client", "@youwol/flux-view", "rxjs", "@youwol/http-clients",
                                   "@youwol/os-core", "@youwol/fv-group"]
             ),
+            AuxiliaryModule(
+                name="webpm-package-info",
+                entryFile="./lib/webpm-package-info/index.ts",
+                loadDependencies=["@youwol/cdn-client", "@youwol/flux-view", "rxjs", "@youwol/http-clients",
+                                  "@youwol/http-primitives", "@youwol/fv-input"]
+            ),
         ]
     ),
     userGuide=True
