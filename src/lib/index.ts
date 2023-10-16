@@ -13,7 +13,11 @@ export async function favoritesWidget(_fwdParams: unknown) {
     return new module.DesktopFavoritesView()
 }
 
-export async function webpmPackageInfoWidget(asset: AssetLightDescription) {
+export async function webpmPackageInfoWidget({
+    asset,
+}: {
+    asset: AssetLightDescription
+}) {
     const module: typeof WebpmPackageInfoModule =
         await setup.installAuxiliaryModule({
             name: 'webpm-package-info',
