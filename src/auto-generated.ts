@@ -8,7 +8,8 @@ const runTimeDependencies = {
         "@youwol/flux-view": "^1.0.3",
         "@youwol/fv-group": "^0.2.3",
         "@youwol/fv-input": "^0.2.1",
-        "rxjs": "^6.5.5"
+        "rxjs": "^6.5.5",
+        "marked": "^4.2.3"
     },
     "includedInBundle": {}
 }
@@ -53,6 +54,11 @@ const externals = {
         "commonjs2": "rxjs",
         "root": "rxjs_APIv6"
     },
+    "marked": {
+        "commonjs": "marked",
+        "commonjs2": "marked",
+        "root": "marked_APIv4"
+    },
     "rxjs/operators": {
         "commonjs": "rxjs/operators",
         "commonjs2": "rxjs/operators",
@@ -94,6 +100,10 @@ const exportedSymbols = {
     "rxjs": {
         "apiKey": "6",
         "exportedSymbol": "rxjs"
+    },
+    "marked": {
+        "apiKey": "4",
+        "exportedSymbol": "marked"
     }
 }
 
@@ -148,7 +158,7 @@ const entries = {
 export const setup = {
     name:'@youwol/os-widgets',
         assetId:'QHlvdXdvbC9vcy13aWRnZXRz',
-    version:'0.1.0',
+    version:'0.1.1-wip',
     shortDescription:"",
     developerDocumentation:'https://platform.youwol.com/applications/@youwol/cdn-explorer/latest?package=@youwol/os-widgets&tab=doc',
     npmPackage:'https://www.npmjs.com/package/@youwol/os-widgets',
@@ -194,7 +204,7 @@ export const setup = {
         const parameters = installParameters || {}
         const scripts = [
             ...(parameters.scripts || []),
-            `@youwol/os-widgets#0.1.0~dist/@youwol/os-widgets/${entry.name}.js`
+            `@youwol/os-widgets#0.1.1-wip~dist/@youwol/os-widgets/${entry.name}.js`
         ]
         const modules = [
             ...(parameters.modules || []),

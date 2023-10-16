@@ -54,7 +54,8 @@
         "@youwol/flux-view": "^1.0.3",
         "@youwol/fv-group": "^0.2.3",
         "@youwol/fv-input": "^0.2.1",
-        "rxjs": "^6.5.5"
+        "rxjs": "^6.5.5",
+        "marked": "^4.2.3"
     },
     "webpm": {
         "dependencies": {
