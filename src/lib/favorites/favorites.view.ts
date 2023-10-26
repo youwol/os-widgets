@@ -1,30 +1,50 @@
-import { child$, Stream$, VirtualDOM, children$ } from '@youwol/flux-view'
+import { child$, children$, Stream$, VirtualDOM } from '@youwol/flux-view'
 import * as OsCore from '@youwol/os-core'
-import { AssetsBackend, ExplorerBackend } from '@youwol/http-clients'
-import { BehaviorSubject, from, Observable } from 'rxjs'
+import { ExplorerBackend } from '@youwol/http-clients'
+import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs'
+import { map, mergeMap, reduce } from 'rxjs/operators'
+import { ApplicationInfo, FavoritesFacade } from '@youwol/os-core'
 import { popupModal } from './common'
 import * as cdnClient from '@youwol/cdn-client'
 import { setup } from '../../auto-generated'
 import type * as Marked from 'marked'
-import { map } from 'rxjs/operators'
 
 export class DesktopFavoritesView implements VirtualDOM {
     public readonly class =
         'd-flex w-50 flex-wrap  justify-content-center align-self-center '
     public readonly children: Stream$<
-        ExplorerBackend.GetItemResponse[],
-        VirtualDOM
+        [ExplorerBackend.GetItemResponse[], ApplicationInfo[]],
+        VirtualDOM[]
     >
 
     constructor() {
+        const appsInfo$ = OsCore.FavoritesFacade.getApplications$().pipe(
+            mergeMap((apps) => {
+                return from(apps).pipe(
+                    mergeMap((app) =>
+                        OsCore.RequestsExecutor.getApplicationInfo({
+                            cdnPackage: window.atob(app.rawId),
+                            version: 'latest',
+                        }),
+                    ),
+                    reduce((acc: ApplicationInfo[], e) => [...acc, e], []),
+                )
+            }),
+        )
+
         this.children = children$(
-            OsCore.FavoritesFacade.getItems$(),
-            (items) => {
-                return items.map((item) => {
-                    return new DesktopFavoriteView({
-                        item,
-                    })
-                })
+            combineLatest([OsCore.FavoritesFacade.getItems$(), appsInfo$]),
+            ([items, apps]) => {
+                return [
+                    ...items.map((item) => {
+                        return new DesktopFavoriteView({
+                            item: item,
+                        })
+                    }),
+                    ...apps.map((app: ApplicationInfo) => {
+                        return new DesktopFavoriteView({ item: app })
+                    }),
+                ]
             },
         )
     }
@@ -41,13 +61,10 @@ export class DesktopFavoriteView implements VirtualDOM {
         textAlign: 'center',
         justifyContent: 'center',
     }
-    public readonly item: ExplorerBackend.GetItemResponse
+    public readonly item: ExplorerBackend.GetItemResponse | ApplicationInfo
     public readonly children: VirtualDOM[]
     public readonly hovered$ = new BehaviorSubject(false)
-
-    public readonly ondblclick = () => {
-        OsCore.tryOpenWithDefault$(this.item).subscribe()
-    }
+    public readonly ondblclick: () => void
     public readonly onmouseenter = () => {
         this.hovered$.next(true)
     }
@@ -56,40 +73,59 @@ export class DesktopFavoriteView implements VirtualDOM {
     }
     public readonly customAttributes: { dataToggle: string; title: string }
 
-    constructor(params: { item: ExplorerBackend.GetItemResponse }) {
+    constructor(params: {
+        item: ExplorerBackend.GetItemResponse | ApplicationInfo
+    }) {
         Object.assign(this, params)
         this.children = [
-            new DesktopAppIconView({ item: this.item }),
+            new DesktopIconView({ item: this.item }),
 
-            new DesktopAppNameView({ item: this.item }),
+            new DesktopNameView({ item: this.item }),
             child$(this.hovered$, (isHovered) =>
                 isHovered ? new SideAppActionsView({ item: this.item }) : {},
             ),
         ]
         this.customAttributes = {
             dataToggle: 'tooltip',
-            title: this.item.name,
+            title:
+                'name' in params.item
+                    ? params.item.name
+                    : params.item.displayName,
+        }
+        this.ondblclick = () => {
+            'name' in this.item
+                ? OsCore.tryOpenWithDefault$(this.item).subscribe()
+                : OsCore.ChildApplicationAPI.getOsInstance()
+                      .createInstance$({
+                          cdnPackage: this.item.cdnPackage,
+                          parameters: {},
+                          focus: true,
+                          version: 'latest',
+                      })
+                      .subscribe()
         }
     }
 }
 
-class DesktopAppIconView implements VirtualDOM {
+class DesktopIconView implements VirtualDOM {
     public readonly class = 'd-flex justify-content-center align-items-center'
     public readonly style = {
         width: '75px',
         height: '75px',
     }
     public readonly children: VirtualDOM[]
-    public readonly item: ExplorerBackend.GetItemResponse
-
     public readonly defaultOpeningApp$: Observable<{
         appInfo: OsCore.ApplicationInfo
     }>
 
-    constructor(params: { item: ExplorerBackend.GetItemResponse }) {
+    constructor(params: {
+        item: ExplorerBackend.GetItemResponse | ApplicationInfo
+    }) {
         Object.assign(this, params)
-
-        this.defaultOpeningApp$ = OsCore.defaultOpeningApp$(this.item)
+        this.defaultOpeningApp$ =
+            'name' in params.item
+                ? OsCore.defaultOpeningApp$(params.item)
+                : from([{ appInfo: params.item }])
 
         this.children = [
             child$(
@@ -120,15 +156,16 @@ class DesktopAppIconView implements VirtualDOM {
     }
 }
 
-class DesktopAppNameView implements VirtualDOM {
+class DesktopNameView implements VirtualDOM {
     public readonly class = 'd-flex justify-content-center align-items-center'
     public readonly style = {
         height: '43px',
     }
     public readonly children: VirtualDOM[]
-    public readonly item: ExplorerBackend.GetItemResponse
 
-    constructor(params: { item: ExplorerBackend.GetItemResponse }) {
+    constructor(params: {
+        item: ExplorerBackend.GetItemResponse | ApplicationInfo
+    }) {
         Object.assign(this, params)
         this.children = [
             {
@@ -136,7 +173,10 @@ class DesktopAppNameView implements VirtualDOM {
                     height: '43px',
                 },
 
-                innerText: this.item.name,
+                innerText:
+                    'name' in params.item
+                        ? params.item.name
+                        : params.item.displayName,
             },
         ]
     }
@@ -149,8 +189,6 @@ class SideAppActionsView implements VirtualDOM {
         top: '5px',
         right: '5%',
     }
-
-    public readonly item: ExplorerBackend.GetItemResponse
     public readonly defaultOpeningApp$: Observable<{
         appInfo: OsCore.ApplicationInfo
     }>
@@ -158,21 +196,27 @@ class SideAppActionsView implements VirtualDOM {
 
     public readonly children: VirtualDOM[]
 
-    constructor(params: { item: ExplorerBackend.GetItemResponse }) {
+    constructor(params: {
+        item: ExplorerBackend.GetItemResponse | ApplicationInfo
+    }) {
         Object.assign(this, params)
-        this.defaultOpeningApp$ = OsCore.defaultOpeningApp$(this.item)
+        this.defaultOpeningApp$ =
+            'name' in params.item
+                ? OsCore.defaultOpeningApp$(params.item)
+                : from([{ appInfo: params.item }])
+        const assetId =
+            'name' in params.item
+                ? params.item.assetId
+                : window.btoa(window.btoa(params.item.cdnPackage))
         this.children = [
-            child$(
-                OsCore.RequestsExecutor.getAsset(this.item.assetId),
-                (asset) => {
-                    return asset.description
-                        ? new SideAppInfoAction({
-                              item: params.item,
-                              text: asset.description,
-                          })
-                        : {}
-                },
-            ),
+            child$(OsCore.RequestsExecutor.getAsset(assetId), (asset) => {
+                return asset.description
+                    ? new SideAppInfoAction({
+                          item: params.item,
+                          text: asset.description,
+                      })
+                    : {}
+            }),
 
             child$(
                 this.defaultOpeningApp$,
@@ -184,10 +228,10 @@ class SideAppActionsView implements VirtualDOM {
                     if (!defaultResp) {
                         return {}
                     }
-                    return new SideAppRunAction({ item: this.item })
+                    return new SideAppRunAction({ item: params.item })
                 },
             ),
-            new SideAppRemoveAction({ item: this.item }),
+            new SideAppRemoveAction({ item: params.item }),
         ]
     }
 }
@@ -201,16 +245,17 @@ const basedActionsStyle = {
 }
 
 const iconsClasses = 'fas  fa-xs yw-hover-text-orange fv-pointer'
+
 class SideAppRunAction implements VirtualDOM {
     public readonly class = basedActionsClass
 
     public readonly style = basedActionsStyle
     public readonly children: VirtualDOM[]
-    public readonly item: ExplorerBackend.GetItemResponse
-
     public readonly onclick: () => void
 
-    constructor(params: { item: ExplorerBackend.GetItemResponse }) {
+    constructor(params: {
+        item: ExplorerBackend.GetItemResponse | ApplicationInfo
+    }) {
         Object.assign(this, params)
         this.children = [
             {
@@ -222,24 +267,28 @@ class SideAppRunAction implements VirtualDOM {
             },
         ]
         this.onclick = () => {
-            OsCore.tryOpenWithDefault$(this.item).subscribe()
+            'name' in params.item
+                ? OsCore.tryOpenWithDefault$(params.item).subscribe()
+                : OsCore.ChildApplicationAPI.getOsInstance()
+                      .createInstance$({
+                          cdnPackage: params.item.cdnPackage,
+                          parameters: {},
+                          focus: true,
+                          version: 'latest',
+                      })
+                      .subscribe()
         }
     }
 }
 
 class SideAppInfoAction implements VirtualDOM {
     public readonly class = basedActionsClass
-
     public readonly style = basedActionsStyle
     public readonly children: VirtualDOM[]
-    public readonly item: ExplorerBackend.GetItemResponse
-    // public readonly asset: ExplorerBackend.GetItemResponse
-
     public readonly onclick: () => void
-    public readonly asset: AssetsBackend.GetAssetResponse
 
     constructor(params: {
-        item: ExplorerBackend.GetItemResponse
+        item: ExplorerBackend.GetItemResponse | ApplicationInfo
         text: string
     }) {
         Object.assign(this, params)
@@ -256,7 +305,7 @@ class SideAppInfoAction implements VirtualDOM {
             popupModal(
                 () =>
                     new AppDescriptionView({
-                        item: this.item,
+                        item: params.item,
                         text: params.text,
                     }),
             )
@@ -268,11 +317,11 @@ class SideAppRemoveAction implements VirtualDOM {
 
     public readonly style = basedActionsStyle
     public readonly children: VirtualDOM[]
-    public readonly item: ExplorerBackend.GetItemResponse
-
     public readonly onclick: () => void
 
-    constructor(params: { item: ExplorerBackend.GetItemResponse }) {
+    constructor(params: {
+        item: ExplorerBackend.GetItemResponse | ApplicationInfo
+    }) {
         Object.assign(this, params)
         this.children = [
             {
@@ -284,7 +333,7 @@ class SideAppRemoveAction implements VirtualDOM {
             },
         ]
         this.onclick = () =>
-            popupModal(() => new ConfirmRemoveActionView({ item: this.item }))
+            popupModal(() => new ConfirmRemoveActionView({ item: params.item }))
     }
 }
 
@@ -302,13 +351,16 @@ class AppDescriptionView implements VirtualDOM {
     public readonly children: VirtualDOM[]
 
     constructor(params: {
-        item: ExplorerBackend.GetItemResponse
+        item: ExplorerBackend.GetItemResponse | ApplicationInfo
         text: string
     }) {
         Object.assign(this, params)
         this.children = [
             new PopupHeaderView({
-                title: params.item.name,
+                title:
+                    'name' in params.item
+                        ? params.item.name
+                        : params.item.displayName,
                 fa: 'info',
             }),
             child$(installMarked$(), (markedModule) => ({
@@ -334,9 +386,10 @@ class ConfirmRemoveActionView implements VirtualDOM {
         'w-100 rounded mx-auto my-auto p-4 yw-bg-dark  yw-box-shadow yw-animate-in'
 
     public readonly children: VirtualDOM[]
-    public readonly item: ExplorerBackend.GetItemResponse
 
-    constructor(params: { item: ExplorerBackend.GetItemResponse }) {
+    constructor(params: {
+        item: ExplorerBackend.GetItemResponse | ApplicationInfo
+    }) {
         Object.assign(this, params)
         this.children = [
             new PopupHeaderView({
@@ -359,7 +412,16 @@ class ConfirmRemoveActionView implements VirtualDOM {
                         },
                         innerText: 'Remove',
                         onclick: () => {
-                            OsCore.FavoritesFacade.remove(this.item.itemId)
+                            'name' in params.item
+                                ? FavoritesFacade.toggleFavoriteItem(
+                                      params.item.assetId,
+                                  )
+                                : FavoritesFacade.toggleFavoriteApplication(
+                                      window.btoa(
+                                          window.btoa(params.item.cdnPackage),
+                                      ),
+                                  )
+
                             closeWithoutAction()
                         },
                     },

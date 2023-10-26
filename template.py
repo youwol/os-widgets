@@ -10,7 +10,7 @@ folder_path = Path(__file__).parent
 pkg_json = parse_json(folder_path / 'package.json')
 
 project_externals = {
-    "@youwol/os-core": "^0.1.12",
+    "@youwol/os-core": "^0.1.14",
     "@youwol/cdn-client": "^2.0.4",
     "@youwol/http-clients": "^2.0.5",
     "@youwol/http-primitives": "^0.1.2",
