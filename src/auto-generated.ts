@@ -1,7 +1,7 @@
 
 const runTimeDependencies = {
     "externals": {
-        "@youwol/os-core": "^0.1.12",
+        "@youwol/os-core": "^0.1.14",
         "@youwol/cdn-client": "^2.0.4",
         "@youwol/http-clients": "^2.0.5",
         "@youwol/http-primitives": "^0.1.2",
