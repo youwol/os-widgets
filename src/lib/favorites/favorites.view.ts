@@ -210,15 +210,6 @@ class SideAppActionsView implements VirtualDOM {
                 ? params.item.assetId
                 : window.btoa(window.btoa(params.item.cdnPackage))
         this.children = [
-            child$(OsCore.RequestsExecutor.getAsset(assetId), (asset) => {
-                return asset.description
-                    ? new SideAppInfoAction({
-                          item: params.item,
-                          text: asset.description,
-                      })
-                    : {}
-            }),
-
             child$(
                 this.defaultOpeningApp$,
                 (
@@ -232,6 +223,14 @@ class SideAppActionsView implements VirtualDOM {
                     return new SideAppRunAction({ item: params.item })
                 },
             ),
+            child$(OsCore.RequestsExecutor.getAsset(assetId), (asset) => {
+                return asset.description
+                    ? new SideAppInfoAction({
+                          item: params.item,
+                          text: asset.description,
+                      })
+                    : {}
+            }),
             new SideAppRemoveAction({ item: params.item }),
         ]
     }
