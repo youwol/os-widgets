@@ -52,7 +52,7 @@ export class DesktopFavoritesView implements VirtualDOM {
 
 export class DesktopFavoriteView implements VirtualDOM {
     public readonly class =
-        'rounded z-1 p-1 d-flex flex-column align-items-center yw-hover-app m-1'
+        'rounded p-1 d-flex flex-column align-items-center yw-hover-app m-1'
     public readonly style = {
         position: 'relative',
         width: '116px',
@@ -157,7 +157,8 @@ class DesktopIconView implements VirtualDOM {
 }
 
 class DesktopNameView implements VirtualDOM {
-    public readonly class = 'd-flex justify-content-center align-items-center'
+    public readonly class =
+        'd-flex justify-content-center align-items-center mt-1'
     public readonly style = {
         height: '43px',
     }
