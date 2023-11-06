@@ -1,7 +1,7 @@
 {
     "name": "@youwol/os-widgets",
     "description": "",
-    "version": "0.1.1-wip",
+    "version": "0.1.1",
     "author": null,
     "homepage": "https://github.com/youwol/os-widgets#README.md",
     "main": "dist/@youwol/os-widgets.js",
