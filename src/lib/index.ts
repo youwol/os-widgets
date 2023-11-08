@@ -11,12 +11,29 @@ export type * as WebpmPackageInfoTypes from './webpm-package-info'
 export type * as FavoritesTypes from './favorites'
 export type * as FileInfoTypes from './file-info'
 
+export async function favoritesModule() {
+    const module: typeof FavoriteModule = await setup.installAuxiliaryModule({
+        name: 'favorites',
+        cdnClient,
+    })
+    return module
+}
+
 export async function favoritesWidget(_fwdParams: unknown) {
     const module: typeof FavoriteModule = await setup.installAuxiliaryModule({
         name: 'favorites',
         cdnClient,
     })
     return new module.DesktopFavoritesView()
+}
+
+export async function webpmPackageInfoModule() {
+    const module: typeof WebpmPackageInfoModule =
+        await setup.installAuxiliaryModule({
+            name: 'webpm-package-info',
+            cdnClient,
+        })
+    return module
 }
 
 export async function webpmPackageInfoWidget({
@@ -30,6 +47,14 @@ export async function webpmPackageInfoWidget({
             cdnClient,
         })
     return new module.PackageInfoView({ asset })
+}
+
+export async function fileInfoModule() {
+    const module: typeof FileInfoModule = await setup.installAuxiliaryModule({
+        name: 'file-info',
+        cdnClient,
+    })
+    return module
 }
 
 export async function fileInfoWidget({
