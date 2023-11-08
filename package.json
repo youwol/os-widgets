@@ -1,8 +1,8 @@
 {
     "name": "@youwol/os-widgets",
     "description": "",
-    "version": "0.1.1",
-    "author": null,
+    "version": "0.1.2-wip",
+    "author": "greinisch@youwol.com",
     "homepage": "https://github.com/youwol/os-widgets#README.md",
     "main": "dist/@youwol/os-widgets.js",
     "types": "src/index.ts",
