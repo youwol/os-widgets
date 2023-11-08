@@ -7,6 +7,10 @@ import type * as FileInfoModule from './file-info'
 import type { AssetLightDescription } from '@youwol/os-core'
 import type { AssetsBackend } from '@youwol/http-clients'
 
+export type * as WebpmPackageInfoTypes from './webpm-package-info'
+export type * as FavoritesTypes from './favorites'
+export type * as FileInfoTypes from './file-info'
+
 export async function favoritesWidget(_fwdParams: unknown) {
     const module: typeof FavoriteModule = await setup.installAuxiliaryModule({
         name: 'favorites',
