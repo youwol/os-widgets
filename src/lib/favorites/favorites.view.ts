@@ -122,6 +122,7 @@ class DesktopIconView implements VirtualDOM {
         item: ExplorerBackend.GetItemResponse | ApplicationInfo
     }) {
         Object.assign(this, params)
+        const isItem = 'name' in params.item
         this.defaultOpeningApp$ =
             'name' in params.item
                 ? OsCore.defaultOpeningApp$(params.item)
@@ -139,6 +140,9 @@ class DesktopIconView implements VirtualDOM {
                         return { class: 'fas fa-file fa-3x' }
                     }
                     return defaultResp.appInfo.graphics.appIcon
+                    return isItem
+                        ? defaultResp.appInfo.graphics.fileIcon
+                        : defaultResp.appInfo.graphics.appIcon
                 },
                 {
                     untilFirst: {
