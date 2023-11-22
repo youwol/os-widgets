@@ -115,7 +115,7 @@ class DesktopIconView implements VirtualDOM {
     }
     public readonly children: VirtualDOM[]
     public readonly defaultOpeningApp$: Observable<{
-        appInfo: OsCore.ApplicationInfo
+        appInfo: OsCore.ApplicationInfo | ExplorerBackend.GetItemResponse
     }>
 
     constructor(params: {
