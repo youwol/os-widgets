@@ -314,7 +314,6 @@ class SideAppInfoAction implements VirtualDOM {
 
 class SideAppRemoveAction implements VirtualDOM {
     public readonly class = basedActionsClass
-
     public readonly style = basedActionsStyle
     public readonly children: VirtualDOM[]
     public readonly onclick: () => void
@@ -421,13 +420,11 @@ class ConfirmRemoveActionView implements VirtualDOM {
                                           window.btoa(params.item.cdnPackage),
                                       ),
                                   )
-
                             closeWithoutAction()
                         },
                     },
                 ],
             },
-
             new ClosePopupButtonView(),
         ]
     }
