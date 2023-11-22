@@ -159,7 +159,7 @@ export const setup = {
     name:'@youwol/os-widgets',
         assetId:'QHlvdXdvbC9vcy13aWRnZXRz',
     version:'0.1.3-wip',
-    shortDescription:"",
+    shortDescription:"This library is a collection of widgets for the OS ecosystem of YouWol",
     developerDocumentation:'https://platform.youwol.com/applications/@youwol/cdn-explorer/latest?package=@youwol/os-widgets&tab=doc',
     npmPackage:'https://www.npmjs.com/package/@youwol/os-widgets',
     sourceGithub:'https://github.com/youwol/os-widgets',
