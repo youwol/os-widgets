@@ -110,8 +110,8 @@ export class DesktopFavoriteView implements VirtualDOM {
 class DesktopIconView implements VirtualDOM {
     public readonly class = 'd-flex justify-content-center align-items-center'
     public readonly style = {
-        width: '75px',
-        height: '75px',
+        width: '70px',
+        height: '70px',
     }
     public readonly children: VirtualDOM[]
     public readonly defaultOpeningApp$: Observable<{
