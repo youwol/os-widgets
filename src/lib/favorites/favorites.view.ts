@@ -110,18 +110,19 @@ export class DesktopFavoriteView implements VirtualDOM {
 class DesktopIconView implements VirtualDOM {
     public readonly class = 'd-flex justify-content-center align-items-center'
     public readonly style = {
-        width: '75px',
-        height: '75px',
+        width: '70px',
+        height: '70px',
     }
     public readonly children: VirtualDOM[]
     public readonly defaultOpeningApp$: Observable<{
-        appInfo: OsCore.ApplicationInfo
+        appInfo: OsCore.ApplicationInfo | ExplorerBackend.GetItemResponse
     }>
 
     constructor(params: {
         item: ExplorerBackend.GetItemResponse | ApplicationInfo
     }) {
         Object.assign(this, params)
+        const isItem = 'name' in params.item
         this.defaultOpeningApp$ =
             'name' in params.item
                 ? OsCore.defaultOpeningApp$(params.item)
@@ -136,9 +137,13 @@ class DesktopIconView implements VirtualDOM {
                         | undefined,
                 ) => {
                     if (!defaultResp) {
-                        return { class: 'fas fa-file fa-3x' }
+                        return {
+                            style: noDefaultOpeningApp,
+                        }
                     }
-                    return defaultResp.appInfo.graphics.appIcon
+                    return isItem
+                        ? defaultResp.appInfo.graphics.fileIcon
+                        : defaultResp.appInfo.graphics.appIcon
                 },
                 {
                     untilFirst: {
@@ -154,6 +159,17 @@ class DesktopIconView implements VirtualDOM {
             ),
         ]
     }
+}
+
+const noDefaultOpeningApp = {
+    width: '100%',
+    height: '100%',
+    backgroundImage: `url('/api/assets-gateway/raw/package/${setup.assetId}/${setup.version}/assets/undefined_app.svg')`,
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center center',
+    filter: 'drop-shadow(1px 3px 5px rgb(0 0 0))',
+    borderRadius: '15%',
 }
 
 class DesktopNameView implements VirtualDOM {
@@ -314,7 +330,6 @@ class SideAppInfoAction implements VirtualDOM {
 
 class SideAppRemoveAction implements VirtualDOM {
     public readonly class = basedActionsClass
-
     public readonly style = basedActionsStyle
     public readonly children: VirtualDOM[]
     public readonly onclick: () => void
@@ -421,13 +436,11 @@ class ConfirmRemoveActionView implements VirtualDOM {
                                           window.btoa(params.item.cdnPackage),
                                       ),
                                   )
-
                             closeWithoutAction()
                         },
                     },
                 ],
             },
-
             new ClosePopupButtonView(),
         ]
     }
