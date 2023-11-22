@@ -137,9 +137,10 @@ class DesktopIconView implements VirtualDOM {
                         | undefined,
                 ) => {
                     if (!defaultResp) {
-                        return { class: 'fas fa-file fa-3x' }
+                        return {
+                            style: noDefaultOpeningApp,
+                        }
                     }
-                    return defaultResp.appInfo.graphics.appIcon
                     return isItem
                         ? defaultResp.appInfo.graphics.fileIcon
                         : defaultResp.appInfo.graphics.appIcon
@@ -158,6 +159,17 @@ class DesktopIconView implements VirtualDOM {
             ),
         ]
     }
+}
+
+const noDefaultOpeningApp = {
+    width: '100%',
+    height: '100%',
+    backgroundImage: `url('/api/assets-gateway/raw/package/${setup.assetId}/${setup.version}/assets/undefined_app.svg')`,
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center center',
+    filter: 'drop-shadow(1px 3px 5px rgb(0 0 0))',
+    borderRadius: '15%',
 }
 
 class DesktopNameView implements VirtualDOM {
