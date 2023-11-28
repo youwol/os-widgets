@@ -158,13 +158,13 @@ const entries = {
 export const setup = {
     name:'@youwol/os-widgets',
         assetId:'QHlvdXdvbC9vcy13aWRnZXRz',
-    version:'0.1.3-wip',
-    shortDescription:"This library is a collection of widgets for the OS ecosystem of YouWol",
+    version:'0.2.0-wip',
+    shortDescription:"",
     developerDocumentation:'https://platform.youwol.com/applications/@youwol/cdn-explorer/latest?package=@youwol/os-widgets&tab=doc',
     npmPackage:'https://www.npmjs.com/package/@youwol/os-widgets',
     sourceGithub:'https://github.com/youwol/os-widgets',
     userGuide:'https://l.youwol.com/doc/@youwol/os-widgets',
-    apiVersion:'01',
+    apiVersion:'02',
     runTimeDependencies,
     externals,
     exportedSymbols,
@@ -189,7 +189,7 @@ export const setup = {
             modules,
             scripts,
         }).then(() => {
-            return window[`@youwol/os-widgets_APIv01`]
+            return window[`@youwol/os-widgets_APIv02`]
         })
     },
     installAuxiliaryModule: ({name, cdnClient, installParameters}:{
@@ -204,7 +204,7 @@ export const setup = {
         const parameters = installParameters || {}
         const scripts = [
             ...(parameters.scripts || []),
-            `@youwol/os-widgets#0.1.3-wip~dist/@youwol/os-widgets/${entry.name}.js`
+            `@youwol/os-widgets#0.2.0-wip~dist/@youwol/os-widgets/${entry.name}.js`
         ]
         const modules = [
             ...(parameters.modules || []),
@@ -215,7 +215,7 @@ export const setup = {
             modules,
             scripts,
         }).then(() => {
-            return window[`@youwol/os-widgets/${entry.name}_APIv01`]
+            return window[`@youwol/os-widgets/${entry.name}_APIv02`]
         })
     },
     getCdnDependencies(name?: string){
