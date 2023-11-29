@@ -1,5 +1,5 @@
 import { setup } from '../auto-generated'
-import * as cdnClient from '@youwol/cdn-client'
+import * as webpmClient from '@youwol/webpm-client'
 
 import type * as FavoriteModule from './favorites'
 import type * as WebpmPackageInfoModule from './webpm-package-info'
@@ -14,7 +14,7 @@ export type * as FileInfoTypes from './file-info'
 export async function favoritesModule() {
     const module: typeof FavoriteModule = await setup.installAuxiliaryModule({
         name: 'favorites',
-        cdnClient,
+        cdnClient: webpmClient,
     })
     return module
 }
@@ -22,7 +22,7 @@ export async function favoritesModule() {
 export async function favoritesWidget(_fwdParams: unknown) {
     const module: typeof FavoriteModule = await setup.installAuxiliaryModule({
         name: 'favorites',
-        cdnClient,
+        cdnClient: webpmClient,
     })
     return new module.DesktopFavoritesView()
 }
@@ -31,7 +31,7 @@ export async function webpmPackageInfoModule() {
     const module: typeof WebpmPackageInfoModule =
         await setup.installAuxiliaryModule({
             name: 'webpm-package-info',
-            cdnClient,
+            cdnClient: webpmClient,
         })
     return module
 }
@@ -44,7 +44,7 @@ export async function webpmPackageInfoWidget({
     const module: typeof WebpmPackageInfoModule =
         await setup.installAuxiliaryModule({
             name: 'webpm-package-info',
-            cdnClient,
+            cdnClient: webpmClient,
         })
     return new module.PackageInfoView({ asset })
 }
@@ -52,7 +52,7 @@ export async function webpmPackageInfoWidget({
 export async function fileInfoModule() {
     const module: typeof FileInfoModule = await setup.installAuxiliaryModule({
         name: 'file-info',
-        cdnClient,
+        cdnClient: webpmClient,
     })
     return module
 }
@@ -66,7 +66,7 @@ export async function fileInfoWidget({
 }) {
     const module: typeof FileInfoModule = await setup.installAuxiliaryModule({
         name: 'file-info',
-        cdnClient,
+        cdnClient: webpmClient,
     })
     return new module.FileInfoView({ asset, permissions })
 }

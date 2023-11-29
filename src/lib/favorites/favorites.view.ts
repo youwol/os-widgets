@@ -7,6 +7,7 @@ import { ApplicationInfo, FavoritesFacade } from '@youwol/os-core'
 import { popupModal } from './common'
 import { setup } from '../../auto-generated'
 import type * as Marked from 'marked'
+import { install } from '@youwol/webpm-client'
 
 export class DesktopFavoritesView implements VirtualDOM<'div'> {
     public readonly tag = 'div'

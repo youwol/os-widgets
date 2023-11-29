@@ -5,7 +5,7 @@ import { raiseHTTPErrors } from '@youwol/http-primitives'
 import { mergeMap, share } from 'rxjs/operators'
 
 import { ChildrenLike, VirtualDOM } from '@youwol/rx-vdom'
-import { getUrlBase } from '@youwol/cdn-client'
+import { getUrlBase } from '@youwol/webpm-client'
 import { AssetLightDescription } from '@youwol/os-core'
 
 export class ExplorerState {

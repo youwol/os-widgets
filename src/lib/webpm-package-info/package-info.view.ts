@@ -11,7 +11,7 @@ import {
     shareReplay,
     tap,
 } from 'rxjs/operators'
-import { getUrlBase } from '@youwol/cdn-client'
+import { getUrlBase } from '@youwol/webpm-client'
 import { Select } from '@youwol/rx-input-views'
 import { ExplorerView } from './package-explorer.view'
 import { AssetLightDescription } from '@youwol/os-core'
