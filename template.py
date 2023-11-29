@@ -56,6 +56,11 @@ template = Template(
                 entryFile="./lib/file-info/index.ts",
                 loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/http-clients", "@youwol/http-primitives"]
             ),
+            AuxiliaryModule(
+                name="about-youwol",
+                entryFile="./lib/about-youwol/index.ts",
+                loadDependencies=["@youwol/rx-vdom", "rxjs"]
+            ),
         ]
     ),
     userGuide=True

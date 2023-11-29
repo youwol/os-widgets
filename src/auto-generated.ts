@@ -148,6 +148,14 @@ const secondaryEntries : {[k:string]:{entryFile: string, name: string, loadDepen
             "@youwol/http-primitives"
         ],
         "name": "file-info"
+    },
+    "about-youwol": {
+        "entryFile": "./lib/about-youwol/index.ts",
+        "loadDependencies": [
+            "@youwol/rx-vdom",
+            "rxjs"
+        ],
+        "name": "about-youwol"
     }
 }
 

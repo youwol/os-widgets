@@ -1,7 +1,7 @@
 type AllTags = keyof HTMLElementTagNameMap
 export type Configuration = {
     TypeCheck: 'strict'
-    SupportedHTMLTags: 'Prod' extends 'Prod' ? AllTags : DevTags
+    SupportedHTMLTags: 'Dev' extends 'Prod' ? AllTags : DevTags
     WithFluxView: false
 }
 
@@ -15,3 +15,6 @@ type DevTags =
     | 'input'
     | 'h3'
     | 'h5'
+    | 'h6'
+    | 'img'
+    | 'p'
