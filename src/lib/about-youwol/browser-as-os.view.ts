@@ -19,7 +19,7 @@ export class BrowserAsOSSectionView extends SectionView {
                 new GridView(),
                 new TextParagraphView({
                     innerHTML: `For a comprehensive understanding and detailed insights into the broader spectrum 
-                        of the topic, we encourage readers to explore the <a href="">dedicated page</a>.`,
+                        of the topic, we encourage readers to explore the YouWol's <a href="/applications/@youwol/os/latest">Osmose</a> solution.`,
                 }),
             ],
         })
