@@ -10,14 +10,14 @@ folder_path = Path(__file__).parent
 pkg_json = parse_json(folder_path / 'package.json')
 
 project_externals = {
-    "@youwol/os-core": "^0.1.14",
-    "@youwol/cdn-client": "^2.0.4",
-    "@youwol/http-clients": "^2.0.5",
-    "@youwol/http-primitives": "^0.1.2",
-    "@youwol/flux-view": "^1.0.3",
-    "@youwol/fv-group": "^0.2.3",
-    "@youwol/fv-input": "^0.2.1",
-    "rxjs": "^6.5.5",
+    "@youwol/os-core": "^0.2.0",
+    "@youwol/webpm-client": "^3.0.0",
+    "@youwol/http-clients": "^3.0.0",
+    "@youwol/http-primitives": "^0.2.0",
+    "@youwol/rx-vdom": "^1.0.1",
+    "@youwol/rx-group-views": "^0.3.0",
+    "@youwol/rx-input-views": "^0.3.0",
+    "rxjs": "^7.5.6",
     # used by favorites view when displaying info, fetch in due time (not at load time)
     "marked": "^4.2.3"
 }
@@ -36,25 +36,25 @@ template = Template(
     bundles=Bundles(
         mainModule=MainModule(
             entryFile='./index.ts',
-            loadDependencies=["@youwol/cdn-client"]
+            loadDependencies=["@youwol/webpm-client"]
         ),
         auxiliaryModules=[
             AuxiliaryModule(
                 name="favorites",
                 entryFile="./lib/favorites/index.ts",
-                loadDependencies=["@youwol/cdn-client", "@youwol/flux-view", "rxjs", "@youwol/http-clients",
-                                  "@youwol/os-core", "@youwol/fv-group"]
+                loadDependencies=["@youwol/webpm-client", "@youwol/rx-vdom", "rxjs", "@youwol/http-clients",
+                                  "@youwol/os-core", "@youwol/rx-group-views"]
             ),
             AuxiliaryModule(
                 name="webpm-package-info",
                 entryFile="./lib/webpm-package-info/index.ts",
-                loadDependencies=["@youwol/cdn-client", "@youwol/flux-view", "rxjs", "@youwol/http-clients",
-                                  "@youwol/http-primitives", "@youwol/fv-input"]
+                loadDependencies=["@youwol/webpm-client", "@youwol/rx-vdom", "rxjs", "@youwol/http-clients",
+                                  "@youwol/http-primitives", "@youwol/rx-input-views"]
             ),
             AuxiliaryModule(
                 name="file-info",
                 entryFile="./lib/file-info/index.ts",
-                loadDependencies=["@youwol/flux-view", "rxjs", "@youwol/http-clients", "@youwol/http-primitives"]
+                loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/http-clients", "@youwol/http-primitives"]
             ),
         ]
     ),

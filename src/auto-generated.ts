@@ -1,14 +1,14 @@
 
 const runTimeDependencies = {
     "externals": {
-        "@youwol/os-core": "^0.1.14",
-        "@youwol/cdn-client": "^2.0.4",
-        "@youwol/http-clients": "^2.0.5",
-        "@youwol/http-primitives": "^0.1.2",
-        "@youwol/flux-view": "^1.0.3",
-        "@youwol/fv-group": "^0.2.3",
-        "@youwol/fv-input": "^0.2.1",
-        "rxjs": "^6.5.5",
+        "@youwol/os-core": "^0.2.0",
+        "@youwol/webpm-client": "^3.0.0",
+        "@youwol/http-clients": "^3.0.0",
+        "@youwol/http-primitives": "^0.2.0",
+        "@youwol/rx-vdom": "^1.0.1",
+        "@youwol/rx-group-views": "^0.3.0",
+        "@youwol/rx-input-views": "^0.3.0",
+        "rxjs": "^7.5.6",
         "marked": "^4.2.3"
     },
     "includedInBundle": {}
@@ -17,42 +17,42 @@ const externals = {
     "@youwol/os-core": {
         "commonjs": "@youwol/os-core",
         "commonjs2": "@youwol/os-core",
-        "root": "@youwol/os-core_APIv01"
+        "root": "@youwol/os-core_APIv02"
     },
-    "@youwol/cdn-client": {
-        "commonjs": "@youwol/cdn-client",
-        "commonjs2": "@youwol/cdn-client",
-        "root": "@youwol/cdn-client_APIv2"
+    "@youwol/webpm-client": {
+        "commonjs": "@youwol/webpm-client",
+        "commonjs2": "@youwol/webpm-client",
+        "root": "@youwol/webpm-client_APIv3"
     },
     "@youwol/http-clients": {
         "commonjs": "@youwol/http-clients",
         "commonjs2": "@youwol/http-clients",
-        "root": "@youwol/http-clients_APIv2"
+        "root": "@youwol/http-clients_APIv3"
     },
     "@youwol/http-primitives": {
         "commonjs": "@youwol/http-primitives",
         "commonjs2": "@youwol/http-primitives",
-        "root": "@youwol/http-primitives_APIv01"
+        "root": "@youwol/http-primitives_APIv02"
     },
-    "@youwol/flux-view": {
-        "commonjs": "@youwol/flux-view",
-        "commonjs2": "@youwol/flux-view",
-        "root": "@youwol/flux-view_APIv1"
+    "@youwol/rx-vdom": {
+        "commonjs": "@youwol/rx-vdom",
+        "commonjs2": "@youwol/rx-vdom",
+        "root": "@youwol/rx-vdom_APIv1"
     },
-    "@youwol/fv-group": {
-        "commonjs": "@youwol/fv-group",
-        "commonjs2": "@youwol/fv-group",
-        "root": "@youwol/fv-group_APIv02"
+    "@youwol/rx-group-views": {
+        "commonjs": "@youwol/rx-group-views",
+        "commonjs2": "@youwol/rx-group-views",
+        "root": "@youwol/rx-group-views_APIv03"
     },
-    "@youwol/fv-input": {
-        "commonjs": "@youwol/fv-input",
-        "commonjs2": "@youwol/fv-input",
-        "root": "@youwol/fv-input_APIv02"
+    "@youwol/rx-input-views": {
+        "commonjs": "@youwol/rx-input-views",
+        "commonjs2": "@youwol/rx-input-views",
+        "root": "@youwol/rx-input-views_APIv03"
     },
     "rxjs": {
         "commonjs": "rxjs",
         "commonjs2": "rxjs",
-        "root": "rxjs_APIv6"
+        "root": "rxjs_APIv7"
     },
     "marked": {
         "commonjs": "marked",
@@ -63,42 +63,42 @@ const externals = {
         "commonjs": "rxjs/operators",
         "commonjs2": "rxjs/operators",
         "root": [
-            "rxjs_APIv6",
+            "rxjs_APIv7",
             "operators"
         ]
     }
 }
 const exportedSymbols = {
     "@youwol/os-core": {
-        "apiKey": "01",
+        "apiKey": "02",
         "exportedSymbol": "@youwol/os-core"
     },
-    "@youwol/cdn-client": {
-        "apiKey": "2",
-        "exportedSymbol": "@youwol/cdn-client"
+    "@youwol/webpm-client": {
+        "apiKey": "3",
+        "exportedSymbol": "@youwol/webpm-client"
     },
     "@youwol/http-clients": {
-        "apiKey": "2",
+        "apiKey": "3",
         "exportedSymbol": "@youwol/http-clients"
     },
     "@youwol/http-primitives": {
-        "apiKey": "01",
+        "apiKey": "02",
         "exportedSymbol": "@youwol/http-primitives"
     },
-    "@youwol/flux-view": {
+    "@youwol/rx-vdom": {
         "apiKey": "1",
-        "exportedSymbol": "@youwol/flux-view"
+        "exportedSymbol": "@youwol/rx-vdom"
     },
-    "@youwol/fv-group": {
-        "apiKey": "02",
-        "exportedSymbol": "@youwol/fv-group"
+    "@youwol/rx-group-views": {
+        "apiKey": "03",
+        "exportedSymbol": "@youwol/rx-group-views"
     },
-    "@youwol/fv-input": {
-        "apiKey": "02",
-        "exportedSymbol": "@youwol/fv-input"
+    "@youwol/rx-input-views": {
+        "apiKey": "03",
+        "exportedSymbol": "@youwol/rx-input-views"
     },
     "rxjs": {
-        "apiKey": "6",
+        "apiKey": "7",
         "exportedSymbol": "rxjs"
     },
     "marked": {
@@ -110,7 +110,7 @@ const exportedSymbols = {
 const mainEntry : {entryFile: string,loadDependencies:string[]} = {
     "entryFile": "./index.ts",
     "loadDependencies": [
-        "@youwol/cdn-client"
+        "@youwol/webpm-client"
     ]
 }
 
@@ -118,31 +118,31 @@ const secondaryEntries : {[k:string]:{entryFile: string, name: string, loadDepen
     "favorites": {
         "entryFile": "./lib/favorites/index.ts",
         "loadDependencies": [
-            "@youwol/cdn-client",
-            "@youwol/flux-view",
+            "@youwol/webpm-client",
+            "@youwol/rx-vdom",
             "rxjs",
             "@youwol/http-clients",
             "@youwol/os-core",
-            "@youwol/fv-group"
+            "@youwol/rx-group-views"
         ],
         "name": "favorites"
     },
     "webpm-package-info": {
         "entryFile": "./lib/webpm-package-info/index.ts",
         "loadDependencies": [
-            "@youwol/cdn-client",
-            "@youwol/flux-view",
+            "@youwol/webpm-client",
+            "@youwol/rx-vdom",
             "rxjs",
             "@youwol/http-clients",
             "@youwol/http-primitives",
-            "@youwol/fv-input"
+            "@youwol/rx-input-views"
         ],
         "name": "webpm-package-info"
     },
     "file-info": {
         "entryFile": "./lib/file-info/index.ts",
         "loadDependencies": [
-            "@youwol/flux-view",
+            "@youwol/rx-vdom",
             "rxjs",
             "@youwol/http-clients",
             "@youwol/http-primitives"
@@ -158,13 +158,13 @@ const entries = {
 export const setup = {
     name:'@youwol/os-widgets',
         assetId:'QHlvdXdvbC9vcy13aWRnZXRz',
-    version:'0.1.3-wip',
-    shortDescription:"This library is a collection of widgets for the OS ecosystem of YouWol",
+    version:'0.2.1-wip',
+    shortDescription:"Collection of widgets for the in-browser emulated OS of YouWol.",
     developerDocumentation:'https://platform.youwol.com/applications/@youwol/cdn-explorer/latest?package=@youwol/os-widgets&tab=doc',
     npmPackage:'https://www.npmjs.com/package/@youwol/os-widgets',
     sourceGithub:'https://github.com/youwol/os-widgets',
     userGuide:'https://l.youwol.com/doc/@youwol/os-widgets',
-    apiVersion:'01',
+    apiVersion:'02',
     runTimeDependencies,
     externals,
     exportedSymbols,
@@ -189,7 +189,7 @@ export const setup = {
             modules,
             scripts,
         }).then(() => {
-            return window[`@youwol/os-widgets_APIv01`]
+            return window[`@youwol/os-widgets_APIv02`]
         })
     },
     installAuxiliaryModule: ({name, cdnClient, installParameters}:{
@@ -204,7 +204,7 @@ export const setup = {
         const parameters = installParameters || {}
         const scripts = [
             ...(parameters.scripts || []),
-            `@youwol/os-widgets#0.1.3-wip~dist/@youwol/os-widgets/${entry.name}.js`
+            `@youwol/os-widgets#0.2.1-wip~dist/@youwol/os-widgets/${entry.name}.js`
         ]
         const modules = [
             ...(parameters.modules || []),
@@ -215,7 +215,7 @@ export const setup = {
             modules,
             scripts,
         }).then(() => {
-            return window[`@youwol/os-widgets/${entry.name}_APIv01`]
+            return window[`@youwol/os-widgets/${entry.name}_APIv02`]
         })
     },
     getCdnDependencies(name?: string){

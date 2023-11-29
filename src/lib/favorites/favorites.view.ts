@@ -1,21 +1,19 @@
-import { child$, children$, Stream$, VirtualDOM } from '@youwol/flux-view'
+import { VirtualDOM, ChildrenLike } from '@youwol/rx-vdom'
 import * as OsCore from '@youwol/os-core'
-import { ExplorerBackend } from '@youwol/http-clients'
+import { AssetsBackend, ExplorerBackend } from '@youwol/http-clients'
 import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs'
 import { map, mergeMap, reduce } from 'rxjs/operators'
 import { ApplicationInfo, FavoritesFacade } from '@youwol/os-core'
 import { popupModal } from './common'
-import * as cdnClient from '@youwol/cdn-client'
 import { setup } from '../../auto-generated'
 import type * as Marked from 'marked'
+import { install } from '@youwol/webpm-client'
 
-export class DesktopFavoritesView implements VirtualDOM {
+export class DesktopFavoritesView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class =
         'd-flex w-50 flex-wrap  justify-content-center align-self-center '
-    public readonly children: Stream$<
-        [ExplorerBackend.GetItemResponse[], ApplicationInfo[]],
-        VirtualDOM[]
-    >
+    public readonly children: ChildrenLike
 
     constructor() {
         const appsInfo$ = OsCore.FavoritesFacade.getApplications$().pipe(
@@ -32,9 +30,13 @@ export class DesktopFavoritesView implements VirtualDOM {
             }),
         )
 
-        this.children = children$(
-            combineLatest([OsCore.FavoritesFacade.getItems$(), appsInfo$]),
-            ([items, apps]) => {
+        this.children = {
+            policy: 'replace',
+            source$: combineLatest([
+                OsCore.FavoritesFacade.getItems$(),
+                appsInfo$,
+            ]),
+            vdomMap: ([items, apps]) => {
                 return [
                     ...items.map((item) => {
                         return new DesktopFavoriteView({
@@ -46,23 +48,24 @@ export class DesktopFavoritesView implements VirtualDOM {
                     }),
                 ]
             },
-        )
+        }
     }
 }
 
-export class DesktopFavoriteView implements VirtualDOM {
+export class DesktopFavoriteView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class =
         'rounded p-1 d-flex flex-column align-items-center yw-hover-app m-1'
     public readonly style = {
-        position: 'relative',
+        position: 'relative' as const,
         width: '116px',
         height: '125px',
-        overflowWrap: 'anywhere',
-        textAlign: 'center',
-        justifyContent: 'center',
+        overflowWrap: 'anywhere' as const,
+        textAlign: 'center' as const,
+        justifyContent: 'center' as const,
     }
     public readonly item: ExplorerBackend.GetItemResponse | ApplicationInfo
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly hovered$ = new BehaviorSubject(false)
     public readonly ondblclick: () => void
     public readonly onmouseenter = () => {
@@ -79,11 +82,14 @@ export class DesktopFavoriteView implements VirtualDOM {
         Object.assign(this, params)
         this.children = [
             new DesktopIconView({ item: this.item }),
-
             new DesktopNameView({ item: this.item }),
-            child$(this.hovered$, (isHovered) =>
-                isHovered ? new SideAppActionsView({ item: this.item }) : {},
-            ),
+            {
+                source$: this.hovered$,
+                vdomMap: (isHovered) =>
+                    isHovered
+                        ? new SideAppActionsView({ item: this.item })
+                        : { tag: 'div' },
+            },
         ]
         this.customAttributes = {
             dataToggle: 'tooltip',
@@ -107,78 +113,64 @@ export class DesktopFavoriteView implements VirtualDOM {
     }
 }
 
-class DesktopIconView implements VirtualDOM {
+class DesktopIconView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class = 'd-flex justify-content-center align-items-center'
     public readonly style = {
-        width: '70px',
-        height: '70px',
+        width: '75px',
+        height: '75px',
     }
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly defaultOpeningApp$: Observable<{
-        appInfo: OsCore.ApplicationInfo | ExplorerBackend.GetItemResponse
+        appInfo: OsCore.ApplicationInfo
     }>
 
     constructor(params: {
         item: ExplorerBackend.GetItemResponse | ApplicationInfo
     }) {
         Object.assign(this, params)
-        const isItem = 'name' in params.item
         this.defaultOpeningApp$ =
             'name' in params.item
                 ? OsCore.defaultOpeningApp$(params.item)
                 : from([{ appInfo: params.item }])
 
         this.children = [
-            child$(
-                this.defaultOpeningApp$,
-                (
+            {
+                source$: this.defaultOpeningApp$,
+                vdomMap: (
                     defaultResp:
                         | { appInfo: OsCore.ApplicationInfo }
                         | undefined,
                 ) => {
                     if (!defaultResp) {
-                        return {
-                            style: noDefaultOpeningApp,
-                        }
+                        return { tag: 'div', class: 'fas fa-file fa-3x' }
                     }
-                    return isItem
-                        ? defaultResp.appInfo.graphics.fileIcon
-                        : defaultResp.appInfo.graphics.appIcon
+                    return defaultResp.appInfo.graphics.appIcon
                 },
-                {
-                    untilFirst: {
-                        class: 'd-flex align-items-center position-relative',
-                        children: [
-                            { class: 'fas fa-file fa-3x' },
-                            {
-                                class: 'fas fa-spinner w-100 fa-spin fv-text-secondary text-center position-absolute',
-                            },
-                        ],
-                    },
+                untilFirst: {
+                    tag: 'div',
+                    class: 'd-flex align-items-center position-relative',
+                    children: [
+                        { tag: 'div', class: 'fas fa-file fa-3x' },
+                        {
+                            tag: 'div',
+                            class: 'fas fa-spinner w-100 fa-spin fv-text-secondary text-center position-absolute',
+                        },
+                    ],
                 },
-            ),
+            },
         ]
     }
 }
 
-const noDefaultOpeningApp = {
-    width: '100%',
-    height: '100%',
-    backgroundImage: `url('/api/assets-gateway/raw/package/${setup.assetId}/${setup.version}/assets/undefined_app.svg')`,
-    backgroundSize: 'contain',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center center',
-    filter: 'drop-shadow(1px 3px 5px rgb(0 0 0))',
-    borderRadius: '15%',
-}
-
-class DesktopNameView implements VirtualDOM {
+class DesktopNameView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class =
         'd-flex justify-content-center align-items-center mt-1'
     public readonly style = {
         height: '43px',
     }
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
 
     constructor(params: {
         item: ExplorerBackend.GetItemResponse | ApplicationInfo
@@ -186,10 +178,10 @@ class DesktopNameView implements VirtualDOM {
         Object.assign(this, params)
         this.children = [
             {
+                tag: 'div',
                 style: {
                     height: '43px',
                 },
-
                 innerText:
                     'name' in params.item
                         ? params.item.name
@@ -199,10 +191,11 @@ class DesktopNameView implements VirtualDOM {
     }
 }
 
-class SideAppActionsView implements VirtualDOM {
+class SideAppActionsView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class = 'd-flex flex-column' //: Stream$<boolean, string>
     public readonly style = {
-        position: 'absolute',
+        position: 'absolute' as const,
         top: '5px',
         right: '5%',
     }
@@ -211,7 +204,7 @@ class SideAppActionsView implements VirtualDOM {
     }>
     public readonly connectedCallback = (elem) => elem.stopPropagation
 
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
 
     constructor(params: {
         item: ExplorerBackend.GetItemResponse | ApplicationInfo
@@ -226,27 +219,32 @@ class SideAppActionsView implements VirtualDOM {
                 ? params.item.assetId
                 : window.btoa(window.btoa(params.item.cdnPackage))
         this.children = [
-            child$(
-                this.defaultOpeningApp$,
-                (
+            {
+                source$: this.defaultOpeningApp$,
+                vdomMap: (
                     defaultResp:
-                        | { appInfo: OsCore.ApplicationInfo }
+                        | {
+                              appInfo: OsCore.ApplicationInfo
+                          }
                         | undefined,
                 ) => {
                     if (!defaultResp) {
-                        return {}
+                        return { tag: 'div' }
                     }
                     return new SideAppRunAction({ item: params.item })
                 },
-            ),
-            child$(OsCore.RequestsExecutor.getAsset(assetId), (asset) => {
-                return asset.description
-                    ? new SideAppInfoAction({
-                          item: params.item,
-                          text: asset.description,
-                      })
-                    : {}
-            }),
+            },
+            {
+                source$: OsCore.RequestsExecutor.getAsset(assetId),
+                vdomMap: (asset: AssetsBackend.AssetBase) => {
+                    return asset.description
+                        ? new SideAppInfoAction({
+                              item: params.item,
+                              text: asset.description,
+                          })
+                        : { tag: 'div' }
+                },
+            },
             new SideAppRemoveAction({ item: params.item }),
         ]
     }
@@ -262,11 +260,12 @@ const basedActionsStyle = {
 
 const iconsClasses = 'fas  fa-xs yw-hover-text-orange fv-pointer'
 
-class SideAppRunAction implements VirtualDOM {
+class SideAppRunAction implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class = basedActionsClass
 
     public readonly style = basedActionsStyle
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly onclick: () => void
 
     constructor(params: {
@@ -275,6 +274,7 @@ class SideAppRunAction implements VirtualDOM {
         Object.assign(this, params)
         this.children = [
             {
+                tag: 'div',
                 class: `fa-play ${iconsClasses}`,
                 customAttributes: {
                     dataToggle: 'tooltip',
@@ -297,10 +297,11 @@ class SideAppRunAction implements VirtualDOM {
     }
 }
 
-class SideAppInfoAction implements VirtualDOM {
+class SideAppInfoAction implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class = basedActionsClass
     public readonly style = basedActionsStyle
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly onclick: () => void
 
     constructor(params: {
@@ -310,6 +311,7 @@ class SideAppInfoAction implements VirtualDOM {
         Object.assign(this, params)
         this.children = [
             {
+                tag: 'div',
                 class: `fa-info ${iconsClasses}`,
                 customAttributes: {
                     dataToggle: 'tooltip',
@@ -328,10 +330,12 @@ class SideAppInfoAction implements VirtualDOM {
     }
 }
 
-class SideAppRemoveAction implements VirtualDOM {
+class SideAppRemoveAction implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class = basedActionsClass
+
     public readonly style = basedActionsStyle
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly onclick: () => void
 
     constructor(params: {
@@ -340,6 +344,7 @@ class SideAppRemoveAction implements VirtualDOM {
         Object.assign(this, params)
         this.children = [
             {
+                tag: 'div',
                 class: `fa-times-circle ${iconsClasses}`,
                 customAttributes: {
                     dataToggle: 'tooltip',
@@ -354,16 +359,17 @@ class SideAppRemoveAction implements VirtualDOM {
 
 function installMarked$() {
     return from(
-        cdnClient.install({
+        install({
             modules: [`marked#${setup.runTimeDependencies.externals.marked}`],
         }) as unknown as Promise<{ marked: typeof Marked }>,
     ).pipe(map(({ marked }) => marked))
 }
 
-class AppDescriptionView implements VirtualDOM {
+class AppDescriptionView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class =
         'vw-50 vh-50 rounded mx-auto my-auto p-4 yw-bg-dark  yw-box-shadow yw-animate-in '
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
 
     constructor(params: {
         item: ExplorerBackend.GetItemResponse | ApplicationInfo
@@ -378,15 +384,20 @@ class AppDescriptionView implements VirtualDOM {
                         : params.item.displayName,
                 fa: 'info',
             }),
-            child$(installMarked$(), (markedModule) => ({
-                class: 'fv-text-primary mt-4 mb-4 text-start overflow-auto',
-                style: {
-                    width: '50vh',
-                    maxHeight: '50vh',
-                },
-                innerHTML: markedModule.parse(params.text),
-            })),
             {
+                source$: installMarked$(),
+                vdomMap: (markedModule: { parse: (string) => string }) => ({
+                    tag: 'div',
+                    class: 'fv-text-primary mt-4 mb-4 text-start overflow-auto',
+                    style: {
+                        width: '50vh',
+                        maxHeight: '50vh',
+                    },
+                    innerHTML: markedModule.parse(params.text),
+                }),
+            },
+            {
+                tag: 'div',
                 class: 'd-flex  fv-text-primary yw-hover-text-dark justify-content-center',
                 children: [new CanclePopupButtonView()],
             },
@@ -396,11 +407,12 @@ class AppDescriptionView implements VirtualDOM {
     }
 }
 
-class ConfirmRemoveActionView implements VirtualDOM {
+class ConfirmRemoveActionView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     public readonly class =
         'w-100 rounded mx-auto my-auto p-4 yw-bg-dark  yw-box-shadow yw-animate-in'
 
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
 
     constructor(params: {
         item: ExplorerBackend.GetItemResponse | ApplicationInfo
@@ -412,15 +424,18 @@ class ConfirmRemoveActionView implements VirtualDOM {
                 fa: 'times-circle',
             }),
             {
+                tag: 'div',
                 class: 'fv-text-primary mt-4 mb-4 text-center',
                 innerText: 'Remove from desktop?',
             },
 
             {
+                tag: 'div',
                 class: 'd-flex  fv-text-primary yw-hover-text-dark justify-content-between',
                 children: [
                     new CanclePopupButtonView(),
                     {
+                        tag: 'div',
                         class: 'btn ms-3 yw-text-light-orange  yw-border-orange yw-hover-bg-light-orange rounded yw-hover-text-dark yw-text-orange  fv-bg-background',
                         style: {
                             width: '100px',
@@ -436,21 +451,23 @@ class ConfirmRemoveActionView implements VirtualDOM {
                                           window.btoa(params.item.cdnPackage),
                                       ),
                                   )
+
                             closeWithoutAction()
                         },
                     },
                 ],
             },
+
             new ClosePopupButtonView(),
         ]
     }
 }
 
-export class PopupHeaderView implements VirtualDOM {
+export class PopupHeaderView implements VirtualDOM<'i'> {
     /**
      * @group Immutable DOM Constants
      */
-    public readonly tag: string = 'i'
+    public readonly tag = 'i'
     /**
      * @group Immutable DOM Constants
      */
@@ -458,11 +475,12 @@ export class PopupHeaderView implements VirtualDOM {
     /**
      * @group Immutable DOM Constants
      */
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
 
     constructor({ title, fa }: { title: string; fa: string }) {
         this.children = [
             {
+                tag: 'div',
                 style: {
                     fontSize: '16px',
                 },
@@ -474,7 +492,7 @@ export class PopupHeaderView implements VirtualDOM {
     }
 }
 
-export class CanclePopupButtonView implements VirtualDOM {
+export class CanclePopupButtonView implements VirtualDOM<'span'> {
     /**
      * @group Immutable DOM Constants
      */
@@ -502,7 +520,7 @@ export class CanclePopupButtonView implements VirtualDOM {
     public readonly onclick = () => closeWithoutAction()
 }
 
-export class ClosePopupButtonView implements VirtualDOM {
+export class ClosePopupButtonView implements VirtualDOM<'span'> {
     /**
      * @group Immutable DOM Constants
      */
@@ -515,7 +533,7 @@ export class ClosePopupButtonView implements VirtualDOM {
      * @group Immutable DOM Constants
      */
     public readonly style = {
-        position: 'absolute',
+        position: 'absolute' as const,
         top: '10px',
         right: '10px',
     }
