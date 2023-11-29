@@ -14,14 +14,14 @@ export class AboutView implements VirtualDOM<'div'> {
     public readonly style = {
         position: 'relative' as const,
     }
-    constructor() {
+    constructor({ productName }: { productName: string }) {
         this.children = [
             {
                 tag: 'div',
                 class: 'mx-auto',
                 children: [
                     //{ tag: 'div', style: { height: '170px' } },
-                    new HeaderView(),
+                    new HeaderView({ productName }),
                     {
                         tag: 'div',
                         class: 'p-2 mx-auto',
