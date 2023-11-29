@@ -1,6 +1,6 @@
 # @youwol/os-widgets
 
-This library is a collection of widgets for the OS ecosystem of YouWol
+Collection of widgets for the in-browser emulated OS of YouWol.
 
 This library is part of the hybrid cloud/local ecosystem
 [YouWol](https://platform.youwol.com/applications/@youwol/platform/latest).
