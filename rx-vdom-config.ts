@@ -15,3 +15,6 @@ type DevTags =
     | 'input'
     | 'h3'
     | 'h5'
+    | 'h6'
+    | 'img'
+    | 'p'
