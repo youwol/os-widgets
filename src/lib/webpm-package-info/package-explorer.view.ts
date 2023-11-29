@@ -4,7 +4,7 @@ import { raiseHTTPErrors } from '@youwol/http-primitives'
 
 import { mergeMap, share } from 'rxjs/operators'
 
-import { child$, VirtualDOM } from '@youwol/flux-view'
+import { ChildrenLike, VirtualDOM } from '@youwol/rx-vdom'
 import { getUrlBase } from '@youwol/cdn-client'
 import { AssetLightDescription } from '@youwol/os-core'
 
@@ -37,10 +37,11 @@ export class ExplorerState {
     }
 }
 
-export class FolderView {
+export class FolderView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'folder-view'
     public readonly class = `${FolderView.ClassSelector} d-flex align-items-center fv-pointer fv-hover-text-focus`
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly folder: CdnBackend.FolderResponse
     public readonly state: ExplorerState
     public readonly ondblclick: () => void
@@ -52,14 +53,19 @@ export class FolderView {
         Object.assign(this, params)
         this.children = [
             {
+                tag: 'div',
                 class: 'w-25 d-flex align-items-center',
                 children: [
-                    { class: 'fas fa-folder px-2' },
-                    { innerText: this.folder.name },
+                    { tag: 'div', class: 'fas fa-folder px-2' },
+                    { tag: 'div', innerText: this.folder.name },
                 ],
             },
-            { class: 'w-25 text-center', innerText: this.folder.size / 1000 },
-            { class: 'w-25 text-center', innerText: '-' },
+            {
+                tag: 'div',
+                class: 'w-25 text-center',
+                innerText: `${this.folder.size / 1000}`,
+            },
+            { tag: 'div', class: 'w-25 text-center', innerText: '-' },
         ]
 
         this.ondblclick = () => {
@@ -68,10 +74,11 @@ export class FolderView {
     }
 }
 
-export class FileView {
+export class FileView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'file-view'
     public readonly class = `${FileView.ClassSelector} d-flex align-items-center fv-pointer fv-hover-text-focus`
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly file: CdnBackend.FileResponse
     public readonly state: ExplorerState
 
@@ -86,15 +93,25 @@ export class FileView {
         )}/${this.state.selectedFolder$.getValue()}/${this.file.name}`
         this.children = [
             {
+                tag: 'div',
                 class: 'w-25 d-flex align-items-center',
                 children: [
-                    { class: 'fas fa-file px-2' },
-                    { innerText: this.file.name },
+                    { tag: 'div', class: 'fas fa-file px-2' },
+                    { tag: 'div', innerText: this.file.name },
                 ],
             },
-            { class: 'w-25 text-center', innerText: this.file.size / 1000 },
-            { class: 'w-25 text-center', innerText: this.file.encoding },
             {
+                tag: 'div',
+                class: 'w-25 text-center',
+                innerText: `${this.file.size / 1000}`,
+            },
+            {
+                tag: 'div',
+                class: 'w-25 text-center',
+                innerText: this.file.encoding,
+            },
+            {
+                tag: 'div',
                 class: 'w-25 text-center fas fa-link',
                 onclick: () => window.open(url, '_blank'),
             },
@@ -102,66 +119,81 @@ export class FileView {
     }
 }
 
-export class ExplorerView {
+export class ExplorerView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'explorer-view'
     public readonly class = `${ExplorerView.ClassSelector} border rounded p-3 h-100 overflow-auto`
     public readonly state: ExplorerState
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
 
     constructor(params: { asset: AssetLightDescription; version: string }) {
         Object.assign(this, params)
         this.state = new ExplorerState(params)
 
         this.children = [
-            child$(
-                this.state.selectedFolder$,
-                (path) => new PathView({ state: this.state, folderPath: path }),
-            ),
             {
+                source$: this.state.selectedFolder$,
+                vdomMap: (path: string) =>
+                    new PathView({ state: this.state, folderPath: path }),
+            },
+            {
+                tag: 'div',
                 class: 'd-flex align-items-center',
                 style: {
                     fontWeight: 'bolder',
                 },
                 children: [
                     {
+                        tag: 'div',
                         class: 'w-25 text-center',
                         innerText: 'Name',
                     },
                     {
+                        tag: 'div',
                         class: 'w-25 text-center',
                         innerText: 'Size (kB)',
                     },
                     {
+                        tag: 'div',
                         class: 'w-25 text-center',
                         innerText: 'Encoding',
                     },
                 ],
             },
-            child$(this.state.items$, ({ files, folders }) => {
-                return {
-                    class: 'd-flex flex-column',
-                    children: [
-                        ...folders.map(
-                            (folder) =>
-                                new FolderView({ state: this.state, folder }),
-                        ),
-                        ...files.map(
-                            (file) => new FileView({ file, state: this.state }),
-                        ),
-                    ],
-                }
-            }),
+            {
+                source$: this.state.items$,
+                vdomMap: ({ files, folders }) => {
+                    return {
+                        tag: 'div',
+                        class: 'd-flex flex-column',
+                        children: [
+                            ...folders.map(
+                                (folder) =>
+                                    new FolderView({
+                                        state: this.state,
+                                        folder,
+                                    }),
+                            ),
+                            ...files.map(
+                                (file) =>
+                                    new FileView({ file, state: this.state }),
+                            ),
+                        ],
+                    }
+                },
+            },
         ]
     }
 }
 
-export class PathElementView {
+export class PathElementView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'path-element-view'
     public readonly class = `${PathElementView.ClassSelector} d-flex align-items-center`
     public readonly state: ExplorerState
     public readonly name: string
     public readonly folderPath: string
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly onclick: () => void
     constructor(params: {
         folderPath: string
@@ -172,12 +204,11 @@ export class PathElementView {
 
         this.children = [
             {
+                tag: 'div',
                 class: 'border rounded p-1 mx-1 fv-pointer fv-hover-text-focus',
                 innerText: this.name,
             },
-            {
-                innerText: '/',
-            },
+            { tag: 'div', innerText: '/' },
         ]
 
         this.onclick = () => {
@@ -186,10 +217,11 @@ export class PathElementView {
     }
 }
 
-export class PathView {
+export class PathView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'path-view'
     public readonly class = `${PathView.ClassSelector} d-flex align-items-center my-2`
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly folderPath: string
     public readonly state: ExplorerState
     constructor(params: { state: ExplorerState; folderPath: string }) {

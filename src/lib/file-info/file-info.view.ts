@@ -1,4 +1,4 @@
-import { child$, VirtualDOM } from '@youwol/flux-view'
+import { ChildrenLike, VirtualDOM } from '@youwol/rx-vdom'
 import type { AssetLightDescription } from '@youwol/os-core'
 import {
     AssetsBackend,
@@ -6,13 +6,13 @@ import {
     FilesBackend,
 } from '@youwol/http-clients'
 import { raiseHTTPErrors } from '@youwol/http-primitives'
-import { BehaviorSubject, combineLatest } from 'rxjs'
-import { mergeMap, skip } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, mergeMap, skip } from 'rxjs'
 
-export class FileInfoView {
+export class FileInfoView implements VirtualDOM<'div'> {
     static ClassSelector = 'file-info-view'
+    public readonly tag = 'div'
     public readonly class = `${FileInfoView.ClassSelector} d-flex flex-column p-2 h-100`
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly asset: AssetsBackend.GetAssetResponse
     public readonly permissions: AssetsBackend.GetPermissionsResponse
 
@@ -22,29 +22,30 @@ export class FileInfoView {
     }) {
         Object.assign(this, params)
         this.children = [
-            child$(
-                new AssetsGateway.Client().files
+            {
+                source$: new AssetsGateway.Client().files
                     .getInfo$({ fileId: this.asset.rawId })
                     .pipe(raiseHTTPErrors()),
-                (info) => {
+                vdomMap: (info: FilesBackend.GetInfoResponse) => {
                     return new MetadataView({
                         asset: this.asset,
                         metadata: info.metadata,
                         permissions: this.permissions,
                     })
                 },
-            ),
+            },
         ]
     }
 }
 
-export class MetadataView implements VirtualDOM {
+export class MetadataView implements VirtualDOM<'div'> {
     static ClassSelector = 'metadata-view'
+    public readonly tag = 'div'
     public readonly class = `${FileInfoView.ClassSelector} d-flex flex-column p-2 h-100`
     public readonly asset: AssetsBackend.GetAssetResponse
     public readonly metadata: FilesBackend.Metadata
     public readonly permissions: AssetsBackend.GetPermissionsResponse
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
 
     constructor(params: {
         asset: AssetsBackend.GetAssetResponse
@@ -111,15 +112,16 @@ export class MetadataView implements VirtualDOM {
 
         this.children = [
             contentTypeView,
-            { class: 'my-1' },
+            { tag: 'div', class: 'my-1' },
             contentEncodingView,
-            { class: 'my-2' },
+            { tag: 'div', class: 'my-2' },
         ]
     }
 }
 
-export class MetadataFieldEditable implements VirtualDOM {
-    public readonly children: VirtualDOM[]
+export class MetadataFieldEditable implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
+    public readonly children: ChildrenLike
     public readonly label: string
     public readonly permissions: AssetsBackend.GetPermissionsResponse
     public readonly value$: BehaviorSubject<string>
@@ -132,17 +134,15 @@ export class MetadataFieldEditable implements VirtualDOM {
     }) {
         Object.assign(this, params)
         this.children = [
-            {
-                innerText: this.label,
-            },
+            { tag: 'div', innerText: this.label },
             this.permissions.write
                 ? {
                       tag: 'select',
                       value: this.value$.getValue(),
                       onchange: (ev) => {
-                          const option = Array.from(ev.target).find(
-                              (optionElem) => optionElem['selected'],
-                          )
+                          const option = Array.from(
+                              ev.target as unknown as { selected: boolean }[],
+                          ).find((optionElem) => optionElem.selected)
                           this.value$.next(option['value'])
                       },
                       children: this.values.map((value) => {
@@ -153,7 +153,7 @@ export class MetadataFieldEditable implements VirtualDOM {
                           }
                       }),
                   }
-                : { innerText: this.value$.getValue() },
+                : { tag: 'div', innerText: this.value$.getValue() },
         ]
     }
 }

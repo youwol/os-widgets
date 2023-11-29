@@ -1,4 +1,4 @@
-import { child$, VirtualDOM } from '@youwol/flux-view'
+import { ChildrenLike, VirtualDOM } from '@youwol/rx-vdom'
 import { AssetsGateway, CdnBackend } from '@youwol/http-clients'
 import { raiseHTTPErrors, onHTTPErrors } from '@youwol/http-primitives'
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs'
@@ -12,16 +12,17 @@ import {
     tap,
 } from 'rxjs/operators'
 import { getUrlBase } from '@youwol/cdn-client'
-import { Select } from '@youwol/fv-input'
+import { Select } from '@youwol/rx-input-views'
 import { ExplorerView } from './package-explorer.view'
 import { AssetLightDescription } from '@youwol/os-core'
 
 type MetadataResponse = CdnBackend.GetLibraryInfoResponse
 
-export class PackageVersionSelect implements VirtualDOM {
+export class PackageVersionSelect implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'package-version-select'
     public readonly class = `${PackageVersionSelect.ClassSelector} d-flex align-items-center mx-2`
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly state: PackageInfoState
 
     constructor(params: { state: PackageInfoState }) {
@@ -36,19 +37,17 @@ export class PackageVersionSelect implements VirtualDOM {
             this.state.selectedVersion$,
         )
         this.children = [
-            {
-                innerText: 'Versions:',
-                class: 'px-2',
-            },
+            { tag: 'div', innerText: 'Versions:', class: 'px-2' },
             new Select.View({ state: selectState }),
         ]
     }
 }
 
-export class PackageLinkSelect {
+export class PackageLinkSelect implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'package-link-select'
     public readonly class = `${PackageLinkSelect.ClassSelector} d-flex align-items-center mx-2`
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly state: PackageInfoState
 
     constructor(params: { state: PackageInfoState }) {
@@ -63,19 +62,17 @@ export class PackageLinkSelect {
             this.state.selectedLink$,
         )
         this.children = [
-            {
-                innerText: 'Reports:',
-                class: 'px-2',
-            },
+            { tag: 'div', innerText: 'Reports:', class: 'px-2' },
             new Select.View({ state: selectState }),
         ]
     }
 }
 
-export class PackageInfoHeader {
+export class PackageInfoHeader implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'package-info-header'
     public readonly class = `${PackageInfoHeader.ClassSelector} d-flex w-100 justify-content-center`
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly state: PackageInfoState
 
     constructor(params: { state: PackageInfoState }) {
@@ -97,7 +94,8 @@ interface Link {
     url: string
 }
 
-export class PackageInfoState {
+export class PackageInfoState implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static nativeExplorerId = 'native-explorer'
 
     public readonly asset: AssetLightDescription
@@ -164,23 +162,24 @@ export class PackageInfoState {
     }
 }
 
-export class PackageInfoContent {
+export class PackageInfoContent implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'package-info-content'
     public readonly class = `${PackageInfoHeader.ClassSelector} flex-grow-1 w-100`
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly state: PackageInfoState
 
     constructor(params: { state: PackageInfoState }) {
         Object.assign(this, params)
         this.children = [
-            child$(
-                combineLatest([
+            {
+                source$: combineLatest([
                     this.state.selectedLink$.pipe(
                         filter((l) => l != undefined),
                     ),
                     this.state.links$,
                 ]),
-                ([url, links]) => {
+                vdomMap: ([url, links]) => {
                     const link = links.find((l) => l.url == url)
                     if (url == PackageInfoState.nativeExplorerId) {
                         return new ExplorerView({
@@ -200,15 +199,16 @@ export class PackageInfoContent {
                         )}/${link.url}`,
                     }
                 },
-            ),
+            },
         ]
     }
 }
 
-export class PackageInfoView {
+export class PackageInfoView implements VirtualDOM<'div'> {
+    public readonly tag = 'div'
     static ClassSelector = 'package-info-view'
     public readonly class = `${PackageInfoView.ClassSelector} d-flex flex-column p-2 h-100`
-    public readonly children: VirtualDOM[]
+    public readonly children: ChildrenLike
     public readonly asset: AssetLightDescription
     public readonly state: PackageInfoState
 

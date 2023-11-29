@@ -5,4 +5,13 @@ export type Configuration = {
     WithFluxView: false
 }
 
-type DevTags = 'div'
+type DevTags =
+    | 'div'
+    | 'span'
+    | 'i'
+    | 'option'
+    | 'select'
+    | 'iframe'
+    | 'input'
+    | 'h3'
+    | 'h5'
