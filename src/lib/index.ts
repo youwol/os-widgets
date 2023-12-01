@@ -83,12 +83,16 @@ export async function aboutYouwolModule() {
     return module
 }
 
-export async function aboutYouwolWidget() {
+export async function aboutYouwolWidget({
+    productName,
+}: {
+    productName: string
+}) {
     const module: typeof AboutYouwolModule = await setup.installAuxiliaryModule(
         {
             name: 'about-youwol',
             cdnClient: webpmClient,
         },
     )
-    return new module.AboutView()
+    return new module.AboutView({ productName })
 }
