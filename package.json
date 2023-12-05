@@ -1,7 +1,7 @@
 {
     "name": "@youwol/os-widgets",
     "description": "Collection of widgets for the in-browser emulated OS of YouWol.",
-    "version": "0.2.2",
+    "version": "0.2.3-wip",
     "author": "greinisch@youwol.com",
     "homepage": "https://github.com/youwol/os-widgets#README.md",
     "main": "dist/@youwol/os-widgets.js",
