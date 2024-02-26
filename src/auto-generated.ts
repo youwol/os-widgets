@@ -7,7 +7,9 @@ const runTimeDependencies = {
         "@youwol/http-primitives": "^0.2.0",
         "@youwol/rx-vdom": "^1.0.1",
         "@youwol/rx-group-views": "^0.3.0",
+        "@youwol/rx-tab-views": "^0.3.0",
         "@youwol/rx-input-views": "^0.3.0",
+        "@youwol/rx-button-views": "^0.2.0",
         "rxjs": "^7.5.6",
         "marked": "^4.2.3"
     },
@@ -44,10 +46,20 @@ const externals = {
         "commonjs2": "@youwol/rx-group-views",
         "root": "@youwol/rx-group-views_APIv03"
     },
+    "@youwol/rx-tab-views": {
+        "commonjs": "@youwol/rx-tab-views",
+        "commonjs2": "@youwol/rx-tab-views",
+        "root": "@youwol/rx-tab-views_APIv03"
+    },
     "@youwol/rx-input-views": {
         "commonjs": "@youwol/rx-input-views",
         "commonjs2": "@youwol/rx-input-views",
         "root": "@youwol/rx-input-views_APIv03"
+    },
+    "@youwol/rx-button-views": {
+        "commonjs": "@youwol/rx-button-views",
+        "commonjs2": "@youwol/rx-button-views",
+        "root": "@youwol/rx-button-views_APIv02"
     },
     "rxjs": {
         "commonjs": "rxjs",
@@ -93,9 +105,17 @@ const exportedSymbols = {
         "apiKey": "03",
         "exportedSymbol": "@youwol/rx-group-views"
     },
+    "@youwol/rx-tab-views": {
+        "apiKey": "03",
+        "exportedSymbol": "@youwol/rx-tab-views"
+    },
     "@youwol/rx-input-views": {
         "apiKey": "03",
         "exportedSymbol": "@youwol/rx-input-views"
+    },
+    "@youwol/rx-button-views": {
+        "apiKey": "02",
+        "exportedSymbol": "@youwol/rx-button-views"
     },
     "rxjs": {
         "apiKey": "7",
@@ -156,6 +176,16 @@ const secondaryEntries : {[k:string]:{entryFile: string, name: string, loadDepen
             "rxjs"
         ],
         "name": "about-youwol"
+    },
+    "assets": {
+        "entryFile": "./lib/assets/index.ts",
+        "loadDependencies": [
+            "@youwol/rx-vdom",
+            "rxjs",
+            "@youwol/rx-tab-views",
+            "@youwol/rx-button-views"
+        ],
+        "name": "assets"
     }
 }
 
