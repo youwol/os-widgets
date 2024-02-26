@@ -63,7 +63,7 @@ export class ExposedGroupState {
                 this.groupAccess$.next({
                     name: this.groupName,
                     groupId: this.groupId,
-                    access: groupAccess, // XXX : Type Problem
+                    access: groupAccess,
                 } as AssetsBackend.ExposingGroup)
                 this.loading$.next(false)
             })

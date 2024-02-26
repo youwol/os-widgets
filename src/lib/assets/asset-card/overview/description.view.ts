@@ -144,26 +144,9 @@ class DescriptionEditableView implements VirtualDOM<'div'> {
         editionMode$: BehaviorSubject<boolean>
     }) {
         Object.assign(this, params)
-        // const editBtnViews = {
-        //     tag: 'div',
-        //     clss: 'btn',
-        //     style: {
-        //         position: 'absolute',
-        //         right: '0',
-        //         top: '-10px',
-        //     },
-        //     onclick: () => this.editionMode$.next(true),
-        // }
-
         this.children = [
             {
-                source$: this.editionMode$ /*.pipe(
-                    mergeMap((editionMode) =>
-                        editionMode
-                            ? fetchDependencies$().pipe(mapTo(editionMode))
-                            : of(editionMode),
-                    ),
-                )*/,
+                source$: this.editionMode$,
                 vdomMap: (editionMode: boolean) => {
                     return editionMode
                         ? {

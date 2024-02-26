@@ -6,7 +6,6 @@
  * @module lib/assets
  */
 export * from './asset.view'
-// export { AssetView } from './asset.view'
 export * from './permissions/permissions.view'
 export * from './overview/overview.view'
 export { AssetTagsView } from './overview/tags.view'

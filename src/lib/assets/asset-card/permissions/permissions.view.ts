@@ -45,15 +45,6 @@ export class AssetPermissionsView implements VirtualDOM<'div'> {
                             position: 'relative',
                         },
                         children: [
-                            // {
-                            //     tag: 'div',
-                            //     class: 'fv-bg-background fv-xx-lighter h-100 w-100',
-                            //     style: {
-                            //         opacity: '0.5',
-                            //         position: 'absolute',
-                            //         zIndex: -1,
-                            //     },
-                            // },
                             {
                                 tag: 'div',
                                 class: 'p-2',

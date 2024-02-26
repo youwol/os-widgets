@@ -30,7 +30,6 @@ export class ImagesCarouselView implements VirtualDOM<'div'> {
     public readonly style: Record<string, string>
 
     public readonly children: ChildrenLike
-    // public readonly children: Stream$<number, VirtualDOM>[]
     public readonly selectedSnippet$ = new BehaviorSubject(0)
     public readonly imagesURL: string[]
 
