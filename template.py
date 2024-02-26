@@ -16,14 +16,16 @@ project_externals = {
     "@youwol/http-primitives": "^0.2.0",
     "@youwol/rx-vdom": "^1.0.1",
     "@youwol/rx-group-views": "^0.3.0",
+    "@youwol/rx-tab-views": "^0.3.0",
     "@youwol/rx-input-views": "^0.3.0",
+    "@youwol/rx-button-views": "^0.2.0",
     "rxjs": "^7.5.6",
     # used by favorites view when displaying info, fetch in due time (not at load time)
     "marked": "^4.2.3"
 }
 template = Template(
     path=folder_path,
-    type=PackageType.Library,
+    type=PackageType.LIBRARY,
     name=pkg_json['name'],
     version=pkg_json['version'],
     shortDescription=pkg_json['description'],
@@ -60,6 +62,11 @@ template = Template(
                 name="about-youwol",
                 entryFile="./lib/about-youwol/index.ts",
                 loadDependencies=["@youwol/rx-vdom", "rxjs"]
+            ),
+            AuxiliaryModule(
+                name="assets",
+                entryFile="./lib/assets/index.ts",
+                loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/rx-tab-views", "@youwol/rx-button-views"]
             ),
         ]
     ),
