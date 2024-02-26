@@ -16,7 +16,9 @@ project_externals = {
     "@youwol/http-primitives": "^0.2.0",
     "@youwol/rx-vdom": "^1.0.1",
     "@youwol/rx-group-views": "^0.3.0",
+    "@youwol/rx-tab-views": "^0.3.0",
     "@youwol/rx-input-views": "^0.3.0",
+    "@youwol/rx-button-views": "^0.2.0",
     "rxjs": "^7.5.6",
     # used by favorites view when displaying info, fetch in due time (not at load time)
     "marked": "^4.2.3"
