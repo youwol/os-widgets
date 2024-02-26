@@ -63,6 +63,11 @@ template = Template(
                 entryFile="./lib/about-youwol/index.ts",
                 loadDependencies=["@youwol/rx-vdom", "rxjs"]
             ),
+            AuxiliaryModule(
+                name="assets",
+                entryFile="./lib/assets/index.ts",
+                loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/rx-tab-views", "@youwol/rx-button-views"]
+            ),
         ]
     ),
     userGuide=True
