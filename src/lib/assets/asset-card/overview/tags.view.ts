@@ -1,9 +1,4 @@
-import {
-    AnyVirtualDOM,
-    ChildrenLike,
-    RxHTMLElement,
-    VirtualDOM,
-} from '@youwol/rx-vdom'
+import { ChildrenLike, RxHTMLElement, VirtualDOM } from '@youwol/rx-vdom'
 import { BehaviorSubject, Observable, of } from 'rxjs'
 import { skip } from 'rxjs/operators'
 import { IconButtonView, TextEditableView } from '../misc.view'
