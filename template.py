@@ -66,7 +66,8 @@ template = Template(
             AuxiliaryModule(
                 name="assets",
                 entryFile="./lib/assets/index.ts",
-                loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/rx-tab-views", "@youwol/rx-button-views"]
+                loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/rx-tab-views", "@youwol/rx-button-views",
+                                  "@youwol/rx-input-views"]
             ),
         ]
     ),
