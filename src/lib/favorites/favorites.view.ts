@@ -117,8 +117,8 @@ class DesktopIconView implements VirtualDOM<'div'> {
     public readonly tag = 'div'
     public readonly class = 'd-flex justify-content-center align-items-center'
     public readonly style = {
-        width: '75px',
-        height: '75px',
+        width: '70px',
+        height: '70px',
     }
     public readonly children: ChildrenLike
     public readonly defaultOpeningApp$: Observable<{
