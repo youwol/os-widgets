@@ -183,7 +183,8 @@ const secondaryEntries : {[k:string]:{entryFile: string, name: string, loadDepen
             "@youwol/rx-vdom",
             "rxjs",
             "@youwol/rx-tab-views",
-            "@youwol/rx-button-views"
+            "@youwol/rx-button-views",
+            "@youwol/rx-input-views"
         ],
         "name": "assets"
     }
