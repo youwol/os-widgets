@@ -19,7 +19,11 @@ project_externals = {
     "@youwol/rx-tab-views": "^0.3.0",
     "@youwol/rx-input-views": "^0.3.0",
     "@youwol/rx-button-views": "^0.2.0",
+    "@youwol/rx-context-menu-views": "^0.2.0",
+    "@youwol/rx-tree-views": "^0.3.3",
     "rxjs": "^7.5.6",
+    "lodash": "^4.17.15",
+    "uuid": "^8.3.2",
     # used by favorites view when displaying info, fetch in due time (not at load time)
     "marked": "^4.2.3"
 }
@@ -68,6 +72,13 @@ template = Template(
                 entryFile="./lib/assets/index.ts",
                 loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/rx-tab-views", "@youwol/rx-button-views",
                                   "@youwol/rx-input-views"]
+            ),
+            AuxiliaryModule(
+                name="explorer",
+                entryFile="./lib/explorer/index.ts",
+                loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/rx-tab-views", "@youwol/rx-button-views",
+                                  "@youwol/rx-input-views", "uuid", "lodash", "@youwol/rx-context-menu-views",
+                                  "@youwol/rx-tree-views"]
             ),
         ]
     ),

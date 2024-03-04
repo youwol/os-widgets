@@ -10,7 +10,11 @@ const runTimeDependencies = {
         "@youwol/rx-tab-views": "^0.3.0",
         "@youwol/rx-input-views": "^0.3.0",
         "@youwol/rx-button-views": "^0.2.0",
+        "@youwol/rx-context-menu-views": "^0.2.0",
+        "@youwol/rx-tree-views": "^0.3.3",
         "rxjs": "^7.5.6",
+        "lodash": "^4.17.15",
+        "uuid": "^8.3.2",
         "marked": "^4.2.3"
     },
     "includedInBundle": {}
@@ -61,10 +65,30 @@ const externals = {
         "commonjs2": "@youwol/rx-button-views",
         "root": "@youwol/rx-button-views_APIv02"
     },
+    "@youwol/rx-context-menu-views": {
+        "commonjs": "@youwol/rx-context-menu-views",
+        "commonjs2": "@youwol/rx-context-menu-views",
+        "root": "@youwol/rx-context-menu-views_APIv02"
+    },
+    "@youwol/rx-tree-views": {
+        "commonjs": "@youwol/rx-tree-views",
+        "commonjs2": "@youwol/rx-tree-views",
+        "root": "@youwol/rx-tree-views_APIv03"
+    },
     "rxjs": {
         "commonjs": "rxjs",
         "commonjs2": "rxjs",
         "root": "rxjs_APIv7"
+    },
+    "lodash": {
+        "commonjs": "lodash",
+        "commonjs2": "lodash",
+        "root": "__APIv4"
+    },
+    "uuid": {
+        "commonjs": "uuid",
+        "commonjs2": "uuid",
+        "root": "uuid_APIv8"
     },
     "marked": {
         "commonjs": "marked",
@@ -117,9 +141,25 @@ const exportedSymbols = {
         "apiKey": "02",
         "exportedSymbol": "@youwol/rx-button-views"
     },
+    "@youwol/rx-context-menu-views": {
+        "apiKey": "02",
+        "exportedSymbol": "@youwol/rx-context-menu-views"
+    },
+    "@youwol/rx-tree-views": {
+        "apiKey": "03",
+        "exportedSymbol": "@youwol/rx-tree-views"
+    },
     "rxjs": {
         "apiKey": "7",
         "exportedSymbol": "rxjs"
+    },
+    "lodash": {
+        "apiKey": "4",
+        "exportedSymbol": "_"
+    },
+    "uuid": {
+        "apiKey": "8",
+        "exportedSymbol": "uuid"
     },
     "marked": {
         "apiKey": "4",
@@ -187,6 +227,21 @@ const secondaryEntries : {[k:string]:{entryFile: string, name: string, loadDepen
             "@youwol/rx-input-views"
         ],
         "name": "assets"
+    },
+    "explorer": {
+        "entryFile": "./lib/explorer/index.ts",
+        "loadDependencies": [
+            "@youwol/rx-vdom",
+            "rxjs",
+            "@youwol/rx-tab-views",
+            "@youwol/rx-button-views",
+            "@youwol/rx-input-views",
+            "uuid",
+            "lodash",
+            "@youwol/rx-context-menu-views",
+            "@youwol/rx-tree-views"
+        ],
+        "name": "explorer"
     }
 }
 
