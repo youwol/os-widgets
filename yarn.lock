@@ -1366,6 +1366,14 @@
     "@youwol/rx-vdom" "^1.0.1"
     rxjs "^7.5.6"
 
+"@youwol/rx-context-menu-views@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@youwol/rx-context-menu-views/-/rx-context-menu-views-0.2.0.tgz#1986287a391fc76371256a532d63aad517b3c09c"
+  integrity sha512-B0wkzA1+yl3fxAP3HcYm2kqkSXxClsGRKW3sBp8uHLrp1TRJuqS7WJQx85Eo+wLLP7/k5yOCPmJLEr9U6rfvMA==
+  dependencies:
+    "@youwol/rx-vdom" "^1.0.1"
+    rxjs "^7.5.6"
+
 "@youwol/rx-group-views@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@youwol/rx-group-views/-/rx-group-views-0.3.0.tgz#68ad668dcf5f9677b153d1784c5d5f904dd440b2"
@@ -1386,6 +1394,14 @@
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@youwol/rx-tab-views/-/rx-tab-views-0.3.0.tgz#c41fb29aaade2f77b1cad02c77867c861afffe88"
   integrity sha512-htFK1jSTE/R+EGR2PiU29r9+ZU2ywTSrxj2O3Xbp4vvkw7Smmz/auW8NaF7M1rx7zfR+ak5zQCsV0ePPdt8R/w==
+  dependencies:
+    "@youwol/rx-vdom" "^1.0.1"
+    rxjs "^7.5.6"
+
+"@youwol/rx-tree-views@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@youwol/rx-tree-views/-/rx-tree-views-0.3.3.tgz#aedb384dd2f1aee5fe3c9d266beff90f1b86662c"
+  integrity sha512-bFNqrtRbnGpzQhhMuLceWgUt45pBnsMQaYIn5r/+Zw2n4UP73wei5WE47Aq68mCNk+9oyUezt9uT9C2fxImRMg==
   dependencies:
     "@youwol/rx-vdom" "^1.0.1"
     rxjs "^7.5.6"
@@ -3800,6 +3816,11 @@ lodash.uniqby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
   integrity sha512-e/zcLx6CSbmaEgFHCA7BnoQKyCtKMxnuWrJygbwPs/AIn+IMKl66L8/s+wBUn5LRw2pZx3bUHibiV1b6aTWIww==
+
+lodash@^4.17.15:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 lru-cache@^5.1.1:
   version "5.1.1"
