@@ -252,7 +252,7 @@ const entries = {
 export const setup = {
     name:'@youwol/os-widgets',
         assetId:'QHlvdXdvbC9vcy13aWRnZXRz',
-    version:'0.2.5-wip',
+    version:'0.2.5',
     shortDescription:"Collection of widgets for the in-browser emulated OS of YouWol.",
     developerDocumentation:'https://platform.youwol.com/applications/@youwol/cdn-explorer/latest?package=@youwol/os-widgets&tab=doc',
     npmPackage:'https://www.npmjs.com/package/@youwol/os-widgets',
@@ -298,7 +298,7 @@ export const setup = {
         const parameters = installParameters || {}
         const scripts = [
             ...(parameters.scripts || []),
-            `@youwol/os-widgets#0.2.5-wip~dist/@youwol/os-widgets/${entry.name}.js`
+            `@youwol/os-widgets#0.2.5~dist/@youwol/os-widgets/${entry.name}.js`
         ]
         const modules = [
             ...(parameters.modules || []),
