@@ -6,6 +6,7 @@ import type * as WebpmPackageInfoModule from './webpm-package-info'
 import type * as FileInfoModule from './file-info'
 import type * as AboutYouwolModule from './about-youwol'
 import type * as AssetViewModule from './assets'
+import type * as ExplorerModule from './explorer'
 import type { AssetLightDescription } from '@youwol/os-core'
 import type { AssetsBackend } from '@youwol/http-clients'
 
@@ -14,6 +15,7 @@ export type * as FavoritesTypes from './favorites'
 export type * as FileInfoTypes from './file-info'
 export type * as AboutYouwolTypes from './about-youwol'
 export type * as AssetTypes from './assets/asset-card'
+export type * as ExplorerTypes from './explorer'
 
 export async function favoritesModule() {
     const module: typeof FavoriteModule = await setup.installAuxiliaryModule({
@@ -118,4 +120,12 @@ export async function assetsWidget({
         cdnClient: webpmClient,
     })
     return new module.AssetView({ asset, permissions })
+}
+
+export async function explorerModule() {
+    const module: typeof ExplorerModule = await setup.installAuxiliaryModule({
+        name: 'explorer',
+        cdnClient: webpmClient,
+    })
+    return module
 }
