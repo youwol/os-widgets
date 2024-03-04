@@ -73,6 +73,13 @@ template = Template(
                 loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/rx-tab-views", "@youwol/rx-button-views",
                                   "@youwol/rx-input-views"]
             ),
+            AuxiliaryModule(
+                name="explorer",
+                entryFile="./lib/explorer/index.ts",
+                loadDependencies=["@youwol/rx-vdom", "rxjs", "@youwol/rx-tab-views", "@youwol/rx-button-views",
+                                  "@youwol/rx-input-views", "uuid", "lodash", "@youwol/rx-context-menu-views",
+                                  "@youwol/rx-tree-views"]
+            ),
         ]
     ),
     userGuide=True
