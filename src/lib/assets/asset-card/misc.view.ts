@@ -80,10 +80,12 @@ export class TextEditableView implements VirtualDOM<'div'> {
     public readonly attrText$: RxAttribute<string, string>
     public readonly regularView: (text$) => AnyVirtualDOM
     public readonly templateEditionView: AnyVirtualDOM
+    public readonly inputTagValue$: BehaviorSubject<string>
 
     public readonly ondblclick = () => {
         this.editionMode$.next(true)
     }
+
     constructor(params: {
         text$: BehaviorSubject<string>
         regularView: (text$: BehaviorSubject<string>) => AnyVirtualDOM
@@ -91,41 +93,65 @@ export class TextEditableView implements VirtualDOM<'div'> {
         [key: string]: unknown
     }) {
         Object.assign(this, params)
+
+        this.inputTagValue$ = new BehaviorSubject<string>(this.text$.value)
         this.templateEditionView = this.templateEditionView || {
             tag: 'input',
             type: 'text',
         }
         this.attrText$ = {
             source$: this.text$,
-            vdomMap: (text: string) => text,
+            vdomMap: (text: string) => {
+                this.inputTagValue$.next(text)
+                return text
+            },
         }
-        this.children = [
-            {
-                tag: 'div',
-                class: 'fas fa-tag mr-1',
-            },
-            {
-                source$: this.editionMode$,
-                vdomMap: (isEditing) =>
-                    isEditing
-                        ? this.editionView()
-                        : this.regularView(this.text$),
-            },
-        ]
+        this.children = {
+            policy: 'replace',
+            source$: this.editionMode$,
+            vdomMap: (isEditing) =>
+                isEditing
+                    ? [
+                          {
+                              tag: 'div',
+                              class: 'fas fa-tag fa-xs mr-1',
+                          },
+                          this.editionView(),
+                          this.saveBtnView(),
+                      ]
+                    : [
+                          {
+                              tag: 'div',
+                              class: 'fas fa-tag fa-xs mr-1',
+                          },
+                          this.regularView(this.text$),
+                      ],
+        }
     }
 
     editionView() {
         return {
             ...this.templateEditionView,
-            placeholder: `${this.attrText$}`,
-            value: `${this.attrText$}`,
+            placeholder: this.attrText$,
+            value: this.attrText$,
+            class: 'text-center',
+            onkeyup: (ev: KeyboardEvent) => {
+                this.inputTagValue$.next(ev.target['value'])
+            },
             onkeydown: (ev: KeyboardEvent) => {
                 if (ev.key == 'Enter' && !ev.shiftKey) {
-                    console.log(ev)
                     this.editionMode$.next(false)
                     this.text$.next(ev.target['value'])
                 }
             },
+        } as AnyVirtualDOM
+    }
+
+    saveBtnView() {
+        return {
+            tag: 'i',
+            class: 'fas fa-save text-success fv-pointer fv-hover-xx-lighter ml-1',
+            onclick: () => this.text$.next(this.inputTagValue$.getValue()),
         } as AnyVirtualDOM
     }
 }
