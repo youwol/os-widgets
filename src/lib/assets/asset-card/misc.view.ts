@@ -98,6 +98,7 @@ export class TextEditableView implements VirtualDOM<'div'> {
         this.attrText$ = {
             source$: this.text$,
             vdomMap: (text: string) => text,
+                return text
         }
         this.children = [
             {
@@ -119,6 +120,8 @@ export class TextEditableView implements VirtualDOM<'div'> {
             ...this.templateEditionView,
             placeholder: `${this.attrText$}`,
             value: `${this.attrText$}`,
+            placeholder: this.attrText$,
+            value: this.attrText$,
             onkeydown: (ev: KeyboardEvent) => {
                 if (ev.key == 'Enter' && !ev.shiftKey) {
                     console.log(ev)
